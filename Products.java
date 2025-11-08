@@ -3,7 +3,7 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.util.*;
 
-public class Products{
+public class Products implements applyDiscounts{
 
     float price;
     int stock;
@@ -24,16 +24,22 @@ public class Products{
         ItemCategory itemCategory = ItemCategory.RECOMMENDATIONS;
         return itemCategory;
     }
-
+    
     public float getPrice() {
         return price;
     }
 
+    @Override
+    public void applyDiscountFlat(int  discount){
+        price -= discount;
+    }
+
+    @Override
     public void applyDiscountPerc(int discount) {
         price -= price * (discount / 100f);
     }
-
-    public void applyDiscount(Coupon coupon, int quantity){
+    @Override
+    public void applyCoupon(Coupon coupon, int quantity){
         int required=0;
         switch (coupon) {
             case BUY1GET1:
