@@ -44,13 +44,24 @@ public class Products{
 
 }
 
-class Perishable extends Products{
+interface checkStock {
+    //This one checks of amt in stock
+    public int checkInStock();
+
+    //This one checks if it is in stock :D
+    public boolean isInStock();
+}
+
+
+class Perishable extends Products implements checkStock{
     
     int[] ExpDate;
+    int bad;
 
-    public Perishable(String name, int stock, float price, int[] ExpDate) {
+    public Perishable(String name, int stock, float price, int[] ExpDate, int bad) {
         super(name, stock, price);
         this.ExpDate = ExpDate;
+        this.bad = bad;
     }
 
     public void changeExp(int[] newExpDate){
@@ -59,6 +70,14 @@ class Perishable extends Products{
 
     public int[] getExp(){
         return ExpDate;
+    }
+
+    public void setAmtExp(int amtExp) {
+        this.bad = amtExp;
+    }
+
+    public int getAmtExp() {
+        return bad;
     }
 
     public boolean isExp(int[] expDate){
@@ -118,17 +137,62 @@ class Perishable extends Products{
     }
 
     @Override
+    public int checkInStock(){
+        System.out.println("what? \n1. Exclude bad Produce \n2. Include bad Produce");
+        int choice = In.nextInt();
+        while (true){
+            switch (choice) {
+                case 1:
+                    return stock;
+                case 2: 
+                    return stock-bad;
+                default:
+                    System.out.println("Proper Output Pls");
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public boolean isInStock(){
+        System.out.println("what? \n1. Exclude bad Produce \n2. Include bad Produce");
+        int choice = In.nextInt();
+        while (true){
+            switch (choice) {
+                case 1:
+                    if (stock > 0){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                
+                case 2: 
+                    if (stock - bad > 0){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                default:
+                    System.out.println("Proper Output Pls");
+                    break;
+            }
+        }
+    }
+
+    @Override
     public String toString(){
         return name + "Price: $" + price +", Stock : "+ stock+"\nBest Before (DD/MM/YY): " + Arrays.toString(ExpDate); 
     }
 }
 
-class NonPerishable extends Products{
+class NonPerishable extends Products implements checkStock{
     String manufacturer;
+    int amtWarehouse;
 
-    public NonPerishable(String name, int stock, float price, String manufacturer) {
+    public NonPerishable(String name, int stock, float price, String manufacturer, int amtWarehouse) {
         super(name, stock, price);
         this.manufacturer = manufacturer;
+        this.amtWarehouse = amtWarehouse;
     }
 
     public String getManufacturer() {
@@ -139,6 +203,33 @@ class NonPerishable extends Products{
         this.manufacturer = manufacturer;
     }
 
+    @Override
+    public int checkInStock(){
+        System.out.println("where? \n1. In Store \n2. In Warehouse \n3. In total");
+        int choice = In.nextInt();
+        while (true){
+                switch (choice) {
+                case 1:
+                    return stock;
+                case 2: 
+                    return amtWarehouse;
+                case 3: 
+                    return stock+amtWarehouse;
+                default:
+                System.out.println("Proper Output Pls");
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public boolean isInStock(){
+        if (stock+amtWarehouse > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     @Override
     public String toString(){
@@ -146,10 +237,13 @@ class NonPerishable extends Products{
     }
 }
 
-class Lists {
+
+
+class ListsProduct {
     HashMap<Products, ItemCategory> productList = new HashMap<>();
 
-    public Lists(HashMap<Products, ItemCategory> productList) {
+
+    public ListsProduct(HashMap<Products, ItemCategory> productList) {
         this.productList = productList;
     }
 
@@ -168,7 +262,11 @@ class Lists {
             }
         }
     }
+
+
 }
+
+
 
 
 
