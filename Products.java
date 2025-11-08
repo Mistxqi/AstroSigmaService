@@ -29,12 +29,33 @@ public class Products{
         return price;
     }
 
-    public void applyDiscount(int discount, boolean isPercentage) {
-        if (isPercentage){
-            price -= price * (discount / 100f);
-            if (price < 0) price = 0;
-        } else {
-            price -= discount;
+    public void applyDiscountPerc(int discount) {
+        price -= price * (discount / 100f);
+    }
+
+    public void applyDiscount(Coupon coupon, int quantity){
+        int required=0;
+        switch (coupon) {
+            case BUY1GET1:
+                required =1;
+                break;
+            case BUY2GET1:
+                required =2;
+                break;
+            case BUY3GET1:
+                required =3;
+                break;
+            case BUY4GET1:
+                required =4;
+                break;
+            
+            default:
+                System.out.println("Invalid.");
+                return;
+        }
+
+        if (quantity >= required){
+            price -= price * (coupon.disc / 100f); 
         }
     }
 
@@ -50,6 +71,15 @@ interface checkStock {
 
     //This one checks if it is in stock :D
     public boolean isInStock();
+}
+
+interface applyDiscounts{
+    //Percentage Discount
+    public void applyDiscountPerc(int discount);
+    //Flat Discount
+    public void applyDiscountFlat(int discount);
+    //Coupon
+    public void applyCoupon(Coupon coupon, int quantity);
 }
 
 
@@ -160,18 +190,11 @@ class Perishable extends Products implements checkStock{
         while (true){
             switch (choice) {
                 case 1:
-                    if (stock > 0){
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return (stock > 0);
                 
                 case 2: 
-                    if (stock - bad > 0){
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return ((stock-bad) > 0);
+
                 default:
                     System.out.println("Proper Output Pls");
                     break;
@@ -280,4 +303,18 @@ enum ItemCategory{
     SEAFOOD,
     SNACKS,
     SEASONINGS;
+}
+
+//can someone do this? - Maxmillion
+enum Coupon{
+    BUY1GET1(0.5),
+    BUY2GET1(0.33),
+    BUY3GET1(0.25),
+    BUY4GET1(0.2);
+
+    public final double disc;
+
+    private Coupon(double disc) {
+        this.disc = disc;
+    }
 }
