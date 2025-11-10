@@ -3,6 +3,24 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.util.*;
 
+//Interfaces go Here
+interface checkStock {
+    //This one checks of amt in stock
+    public int checkInStock();
+
+    //This one checks if it is in stock :D
+    public boolean isInStock();
+}
+
+interface applyDiscounts{
+    //Percentage Discount
+    public void applyDiscountPerc(int discount);
+    //Flat Discount
+    public void applyDiscountFlat(int discount);
+    //lowk coupons should be another class ngl.
+}
+
+
 public class Products implements applyDiscounts{
 
     float price;
@@ -38,56 +56,23 @@ public class Products implements applyDiscounts{
     public void applyDiscountPerc(int discount) {
         price -= price * (discount / 100f);
     }
-    @Override
-    public void applyCoupon(Coupon coupon, int quantity){
-        int required=0;
-        switch (coupon) {
-            case BUY1GET1:
-                required =1;
-                break;
-            case BUY2GET1:
-                required =2;
-                break;
-            case BUY3GET1:
-                required =3;
-                break;
-            case BUY4GET1:
-                required =4;
-                break;
+    // @Override
+    // public void applyCoupon(Coupon coupon, int quantity){
+    //     int required=0;
+    //     if (quantity==coupon.req){
             
-            default:
-                System.out.println("Invalid.");
-                return;
-        }
+    //     }
 
-        if (quantity >= required){
-            price -= price * (coupon.disc / 100f); 
-        }
-    }
+    //     if (quantity >= required){
+    //         price -= price * (coupon.disc / 100f); 
+    //     }
+    // }
 
-    public String toString(){
-        return name + "Price: $" + price +", Stock : "+ stock; 
-    }
+    // public String toString(){
+    //     return name + "Price: $" + price +", Stock : "+ stock; 
+    // }
 
 }
-
-interface checkStock {
-    //This one checks of amt in stock
-    public int checkInStock();
-
-    //This one checks if it is in stock :D
-    public boolean isInStock();
-}
-
-interface applyDiscounts{
-    //Percentage Discount
-    public void applyDiscountPerc(int discount);
-    //Flat Discount
-    public void applyDiscountFlat(int discount);
-    //Coupon
-    public void applyCoupon(Coupon coupon, int quantity);
-}
-
 
 class Perishable extends Products implements checkStock{
     
@@ -266,7 +251,14 @@ class NonPerishable extends Products implements checkStock{
     }
 }
 
+class BundleBuy extends Products {
 
+    public BundleBuy(String name, int stock, float price) {
+        super(name, stock, price);
+        //TODO Auto-generated constructor stub
+    }
+
+}
 
 class ListsProduct {
     HashMap<Products, ItemCategory> productList = new HashMap<>();
@@ -291,13 +283,15 @@ class ListsProduct {
             }
         }
     }
-
-
 }
 
+public class ShoppingCart {
+    private ArrayList<Products> cart;
 
-
-
+    public ShoppingCart(ArrayList<Products> cart) {
+        this.cart = cart;
+    }
+}
 
 enum ItemCategory{
     RECOMMENDATIONS,
@@ -311,16 +305,22 @@ enum ItemCategory{
     SEASONINGS;
 }
 
-//can someone do this? - Maxmillion
-enum Coupon{
-    BUY1GET1(0.5),
-    BUY2GET1(0.33),
-    BUY3GET1(0.25),
-    BUY4GET1(0.2);
+
+enum GETcoupons{
+    BUY1GET1(0.5, 1),
+    BUY2GET1(0.33,2),
+    BUY3GET1(0.25,3),
+    BUY4GET1(0.2,4);
 
     public final double disc;
+    public final int req;
 
-    private Coupon(double disc) {
+    private GETcoupons(double disc, int req) {
         this.disc = disc;
+        this.req = req;
+    }
+
+    public Products applyCoupon(Products product, GETcoupons coupon, int amount){
+        return null;
     }
 }
