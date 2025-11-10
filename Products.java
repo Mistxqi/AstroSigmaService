@@ -284,12 +284,76 @@ class ListsProduct {
         }
     }
 }
-
-public class ShoppingCart {
+ class ShoppingCart {
     private ArrayList<Products> cart;
 
-    public ShoppingCart(ArrayList<Products> cart) {
-        this.cart = cart;
+    public ShoppingCart() {
+        this.cart = new ArrayList<>();
+    }
+
+    private class CartItem {
+        Products product;
+        int quantity;
+        String notes;
+    
+        CartItem(Products products, int quantity, String notes) {
+            this.product = products;
+            this.quantity = quantity;
+            this.notes = notes;
+        }
+
+        @Override
+        public String toString() {
+            return product.name + " Quantity: " + quantity + " Price : Rp." + product.getPrice() + " Notes : " + (notes == null ? "None" : notes);
+
+        }
+    }
+    public void addItem(Products product, int quantity, String notes) {
+        for (CartItem item : cart) {
+            if (item.product.equals(product)) {
+                item.quantity += quantity;
+                if (notes != null && !notes.isEmpty()) {
+                    item.notes = notes;
+
+                }
+                System.out.println(product.name + " quantity has been updated to " + item.quantity);
+                return;
+            }
+        }
+        cart.add(new CartItem(product, quantity, notes));
+        System.out.println(product.name + " added to cart.");
+    }
+    public void removeItem(String productName) {
+        for (int i = 0; i < cart.size(); i++) {
+            CartItem item = cart.get(i);
+            if (item.product.name.equalsIgnoreCase(productName)) {
+                cart.remove(i);
+                System.out.println(productName + " removed from the cart");
+                return;
+            }
+        }
+        System.out.println(productName + " Not found in cart.");
+    }
+    public void viewCart() {
+        if (cart.isEmpty()) {
+            System.out.println("You're cart is empty.");
+            return;
+        }
+        System.out.println( "Total price is Rp.", getTotalPrice());
+    }
+
+    public float getTotalPrice() {
+        float total = 0
+        for (int i = 0; i < cart.size(); i++) {
+            CartItem item = cart.get(i);
+            total += item.product.getPrice() * item.quantity;
+        }
+        return total;
+    }
+
+    public void clearCart() {
+        cart.clear();
+        System.out.println("Cart cleared.");
     }
 }
 
