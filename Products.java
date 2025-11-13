@@ -252,19 +252,14 @@ class NonPerishable extends Products implements checkStock{
 }
 
 class BundleBuy extends Products {
-    int quantity;
-    float bundleDisc;
+    
+    int bundleDisc;
     ArrayList<Products> bundle;
 
-    public BundleBuy(String name, int stock, float price, int quantity, float bundleDisc, ArrayList bundle) {
+    public BundleBuy(String name, int stock, float price, int bundleDisc, ArrayList bundle) {
         super(name, stock, price);
-        this.quantity = quantity;
         this.bundleDisc = bundleDisc;
         this.bundle = bundle;
-    }
-
-    public int getQuantity() {
-        return quantity;
     }
 
     public float getBundleDisc() {
@@ -275,18 +270,22 @@ class BundleBuy extends Products {
         return bundle;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void addItem(Products product) {
+        bundle.add(product);
     }
 
-    public void setBundleDisc(float bundleDisc) {
+    public void setBundleDisc(int bundleDisc) {
         this.bundleDisc = bundleDisc;
     }
-
-    public void setBundle(ArrayList<Products> bundle) {
-        this.bundle = bundle;
-    }
     
+    public int getBundlePrice(){
+        int totalPrice =0; 
+        for (Products m : bundle){
+            totalPrice =(int) + m.getPrice();
+        }
+        
+        return totalPrice -= totalPrice * (bundleDisc / 100f);
+    }
 }
 
 class ListsProduct {
@@ -417,7 +416,20 @@ enum GETcoupons{
         this.req = req;
     }
 
-    public Products applyCoupon(Products product, GETcoupons coupon, int amount){
-        return null;
+    public BundleBuy applyCoupon(Products product, GETcoupons coupon, int amount){
+        int required = coupon.req;
+        int totalPrice;
+        ArrayList<Products> bundle = new ArrayList<>();
+        for (int i = 0; i < coupon.req; i++){
+            if (required  >= amount){
+                bundle.add(product);
+                totalPrice + 
+            } else  {
+                System.out.println("Not enough Items");
+                return null;
+            }
+        }
+        new BundleBuy("Bundle: "+product.name,  )
+        //String name, int stock, float price, int bundleDisc, ArrayList bundle)
     }
 }
