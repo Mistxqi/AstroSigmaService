@@ -403,33 +403,34 @@ enum ItemCategory{
 
 
 enum GETcoupons{
-    BUY1GET1(0.5, 1),
-    BUY2GET1(0.33,2),
-    BUY3GET1(0.25,3),
-    BUY4GET1(0.2,4);
+    BUY1GET1(50, 1),
+    BUY2GET1(33,2),
+    BUY3GET1(25,3),
+    BUY4GET1(20,4);
 
-    public final double disc;
+    public final int disc;
     public final int req;
 
-    private GETcoupons(double disc, int req) {
+    private GETcoupons(int disc, int req) {
         this.disc = disc;
         this.req = req;
     }
 
-    public BundleBuy applyCoupon(Products product, GETcoupons coupon, int amount){
-        int required = coupon.req;
-        int totalPrice;
+    public BundleBuy applyCoupon(Products product, int amount){
+        int totalPrice = 0;
         ArrayList<Products> bundle = new ArrayList<>();
-        for (int i = 0; i < coupon.req; i++){
-            if (required  >= amount){
-                bundle.add(product);
-                totalPrice + 
-            } else  {
-                System.out.println("Not enough Items");
-                return null;
-            }
+        int required = this.req;
+        if (amount < required) {
+            System.out.println("Not enough items");
+            return null;
         }
-        new BundleBuy("Bundle: "+product.name,  )
+        
+        for (int i = 0; i < this.req; i++){
+                bundle.add(product);
+                totalPrice += product.getPrice();
+        }
+        BundleBuy bund = new BundleBuy("Bundle: " + product.name, 1 ,totalPrice, this.disc, bundle);
+        return bund; 
         //String name, int stock, float price, int bundleDisc, ArrayList bundle)
     }
 }
