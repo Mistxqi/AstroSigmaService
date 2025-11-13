@@ -252,12 +252,41 @@ class NonPerishable extends Products implements checkStock{
 }
 
 class BundleBuy extends Products {
+    int quantity;
+    float bundleDisc;
+    ArrayList<Products> bundle;
 
-    public BundleBuy(String name, int stock, float price) {
+    public BundleBuy(String name, int stock, float price, int quantity, float bundleDisc, ArrayList bundle) {
         super(name, stock, price);
-        //TODO Auto-generated constructor stub
+        this.quantity = quantity;
+        this.bundleDisc = bundleDisc;
+        this.bundle = bundle;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public float getBundleDisc() {
+        return bundleDisc;
+    }
+
+    public ArrayList<Products> getBundle() {
+        return bundle;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setBundleDisc(float bundleDisc) {
+        this.bundleDisc = bundleDisc;
+    }
+
+    public void setBundle(ArrayList<Products> bundle) {
+        this.bundle = bundle;
+    }
+    
 }
 
 class ListsProduct {
@@ -285,7 +314,7 @@ class ListsProduct {
     }
 }
  class ShoppingCart {
-    private ArrayList<Products> cart;
+    private ArrayList<CartItem> cart;
 
     public ShoppingCart() {
         this.cart = new ArrayList<>();
@@ -302,6 +331,10 @@ class ListsProduct {
             this.notes = notes;
         }
 
+        public Products getProduct(){
+            return this.product;
+        }
+
         @Override
         public String toString() {
             return product.name + " Quantity: " + quantity + " Price : Rp." + product.getPrice() + " Notes : " + (notes == null ? "None" : notes);
@@ -309,7 +342,7 @@ class ListsProduct {
         }
     }
     public void addItem(Products product, int quantity, String notes) {
-        for (CartItem item : cart) {
+        for (CartItem item: cart) {
             if (item.product.equals(product)) {
                 item.quantity += quantity;
                 if (notes != null && !notes.isEmpty()) {
@@ -339,11 +372,11 @@ class ListsProduct {
             System.out.println("You're cart is empty.");
             return;
         }
-        System.out.println( "Total price is Rp.", getTotalPrice());
+        System.out.println( "Total price is Rp."+ getTotalPrice());
     }
 
     public float getTotalPrice() {
-        float total = 0
+        float total = 0;
         for (int i = 0; i < cart.size(); i++) {
             CartItem item = cart.get(i);
             total += item.product.getPrice() * item.quantity;
