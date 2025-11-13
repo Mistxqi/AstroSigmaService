@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
@@ -41,6 +42,10 @@ public class Products implements applyDiscounts{
         }
         ItemCategory itemCategory = ItemCategory.RECOMMENDATIONS;
         return itemCategory;
+    }
+
+    public String getName(){
+        return this.name;
     }
     
     public float getPrice() {
@@ -286,17 +291,48 @@ class BundleBuy extends Products {
         
         return totalPrice -= totalPrice * (bundleDisc / 100f);
     }
+
+    public BundleBuy createBundle(){
+        ArrayList<Products> savedItems = new ArrayList<>();
+        int amt =0;
+            System.out.println("Whats the name of the Bundle");
+        while (true){
+            System.out.println("How many Items? (Max 4)");
+            amt = In.nextInt();
+            if (amt > 4) {
+                System.out.println("Too Large. Retry");
+            }
+            break;
+        }
+        List<Products> allProducts = new ArrayList<>(ListsProduct.getProductList().keySet());
+        for (int i = 0; i < amt; i++) {
+            int index = 1;
+            for (Products m : ListsProduct.getProductList().keySet()){
+                System.out.println(index + m.getName());
+            }
+            int choice = In.nextInt();
+            if (choice >= 1 && choice <= allProducts.size()) {
+                savedItems.add(allProducts.get(choice-1));
+            } else {
+                System.out.println("Invalid choice, skipping.");
+            }
+        }
+
+        System.out.println("Apply Discount? \n 1.yes \n 2.no");
+        //Darvell, pls finish this partttttt
+        BundleBuy bundle = new BundleBuy("", amt, amt, amt, savedItems);
+    }
 }
 
 class ListsProduct {
-    HashMap<Products, ItemCategory> productList = new HashMap<>();
+    private static HashMap<Products, ItemCategory> productList = new HashMap<>();
 
 
     public ListsProduct(HashMap<Products, ItemCategory> productList) {
         this.productList = productList;
     }
 
-    public HashMap<Products, ItemCategory> getProductList() {
+    public static HashMap<Products, ItemCategory> getProductList() {
         return productList;
     }
 
@@ -388,6 +424,7 @@ class ListsProduct {
         System.out.println("Cart cleared.");
     }
 }
+
 
 enum ItemCategory{
     RECOMMENDATIONS,
