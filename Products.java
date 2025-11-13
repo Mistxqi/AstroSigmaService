@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
@@ -42,10 +41,6 @@ public class Products implements applyDiscounts{
         }
         ItemCategory itemCategory = ItemCategory.RECOMMENDATIONS;
         return itemCategory;
-    }
-
-    public String getName(){
-        return this.name;
     }
     
     @Override
@@ -290,6 +285,7 @@ class BundleBuy extends Products {
     for (Products m : bundle){
         totalPrice += m.getPrice();
     }
+<<<<<<< HEAD
     return totalPrice - (totalPrice * (bundleDisc / 100f));
 }
 
@@ -324,17 +320,19 @@ class BundleBuy extends Products {
         //Darvell, pls finish this partttttt
         BundleBuy bundle = new BundleBuy("", amt, amt, amt, savedItems);
     }
+=======
+>>>>>>> parent of 405d9d8 (BundleBuy Extension)
 }
 
 class ListsProduct {
-    private static HashMap<Products, ItemCategory> productList = new HashMap<>();
+    HashMap<Products, ItemCategory> productList = new HashMap<>();
 
 
     public ListsProduct(HashMap<Products, ItemCategory> productList) {
         this.productList = productList;
     }
 
-    public static HashMap<Products, ItemCategory> getProductList() {
+    public HashMap<Products, ItemCategory> getProductList() {
         return productList;
     }
 
@@ -451,7 +449,6 @@ class ListsProduct {
         System.out.println("Cart cleared.");
     }
 }
-
 
 enum ItemCategory{
     RECOMMENDATIONS,
