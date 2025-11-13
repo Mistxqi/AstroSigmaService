@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
@@ -42,12 +43,14 @@ public class Products implements applyDiscounts{
         ItemCategory itemCategory = ItemCategory.RECOMMENDATIONS;
         return itemCategory;
     }
-    
-    @Override
-    public float getPrice() {
-    return getBundlePrice();
-    }
 
+    public String getName(){
+        return this.name;
+    }
+    
+    public float getPrice() {
+        return price;
+    }
 
     @Override
     public void applyDiscountFlat(int  discount){
@@ -280,15 +283,14 @@ class BundleBuy extends Products {
         this.bundleDisc = bundleDisc;
     }
     
-    public float getBundlePrice(){
-    float totalPrice = 0;
-    for (Products m : bundle){
-        totalPrice += m.getPrice();
+    public int getBundlePrice(){
+        int totalPrice =0; 
+        for (Products m : bundle){
+            totalPrice =(int) + m.getPrice();
+        }
+        
+        return totalPrice -= totalPrice * (bundleDisc / 100f);
     }
-<<<<<<< HEAD
-    return totalPrice - (totalPrice * (bundleDisc / 100f));
-}
-
 
     public BundleBuy createBundle(){
         ArrayList<Products> savedItems = new ArrayList<>();
@@ -320,19 +322,17 @@ class BundleBuy extends Products {
         //Darvell, pls finish this partttttt
         BundleBuy bundle = new BundleBuy("", amt, amt, amt, savedItems);
     }
-=======
->>>>>>> parent of 405d9d8 (BundleBuy Extension)
 }
 
 class ListsProduct {
-    HashMap<Products, ItemCategory> productList = new HashMap<>();
+    private static HashMap<Products, ItemCategory> productList = new HashMap<>();
 
 
     public ListsProduct(HashMap<Products, ItemCategory> productList) {
         this.productList = productList;
     }
 
-    public HashMap<Products, ItemCategory> getProductList() {
+    public static HashMap<Products, ItemCategory> getProductList() {
         return productList;
     }
 
@@ -375,28 +375,6 @@ class ListsProduct {
             return product.name + " Quantity: " + quantity + " Price : Rp." + product.getPrice() + " Notes : " + (notes == null ? "None" : notes);
 
         }
-        private void checkForBundle() {
-    List<Products> currentProducts = new ArrayList<>();
-    for (CartItem item : cart) {
-        currentProducts.add(item.product);
-    }
-
-    // Check if any bundle matches
-    for (BundleBuy bundle : ListsBundles.getBundles()) {
-        if (currentProducts.containsAll(bundle.getBundle())) {
-            System.out.println("🎉 Bundle Detected: " + bundle.getName() + " applied with " 
-                + bundle.getBundleDisc() + "% off!");
-            
-            // Remove individual items
-            cart.removeIf(item -> bundle.getBundle().contains(item.product));
-            
-            // Add the bundle as a single cart item
-            cart.add(new CartItem(bundle, 1, "Bundle Deal"));
-            return;
-        }
-    }
-}
-
     }
     public void addItem(Products product, int quantity, String notes) {
         for (CartItem item: cart) {
@@ -407,14 +385,11 @@ class ListsProduct {
 
                 }
                 System.out.println(product.name + " quantity has been updated to " + item.quantity);
-                checkForBundle();
                 return;
             }
-            
         }
         cart.add(new CartItem(product, quantity, notes));
         System.out.println(product.name + " added to cart.");
-        checkForBundle();
     }
     public void removeItem(String productName) {
         for (int i = 0; i < cart.size(); i++) {
@@ -449,6 +424,7 @@ class ListsProduct {
         System.out.println("Cart cleared.");
     }
 }
+
 
 enum ItemCategory{
     RECOMMENDATIONS,
@@ -493,29 +469,5 @@ enum GETcoupons{
         BundleBuy bund = new BundleBuy("Bundle: " + product.name, 1 ,totalPrice, this.disc, bundle);
         return bund; 
         //String name, int stock, float price, int bundleDisc, ArrayList bundle)
-    
     }
-
-    class ListsBundles {
-    private static ArrayList<BundleBuy> bundleList = new ArrayList<>();
-
-    public static void addBundle(BundleBuy bundle) {
-        bundleList.add(bundle);
-    }
-
-    public static ArrayList<BundleBuy> getBundles() {
-        return bundleList;
-    }
-
-    // Optional: find bundle by items
-    public static BundleBuy findBundleByItems(List<Products> items) {
-        for (BundleBuy b : bundleList) {
-            if (b.getBundle().containsAll(items) && items.containsAll(b.getBundle())) {
-                return b;
-            }
-        }
-        return null;
-    }
-}
-
 }
