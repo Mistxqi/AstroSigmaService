@@ -577,6 +577,25 @@ enum GETcoupons{
         this.req = req;
     }
 
+
+    public BundleBuy applyCoupon(Products product, int amount) {
+    if (amount < req) {
+        System.out.println("Not enough items for this coupon. Required at least: " + req);
+        return null;
+    }
+
+    HashMap<Products, Integer> bundleMap = new HashMap<>();
+    bundleMap.put(product, amount);
+
+    String bundleName = product.getName() + " x" + amount + " (" + this.name() + ")";
+    BundleBuy bundle = new BundleBuy(bundleName, 1, 0, disc, bundleMap);
+
+    System.out.println("Applied coupon " + this.name() + " (" + disc + "% off) to "
+            + product.getName() + " x" + amount);
+
+    return bundle;
+}
+
     public BundleBuy applyCoupon(Products product, int amount){
         BundleBuy bundle = new BundleBuy(null, 0, 0, 0, null);
         if (amount < req) {
@@ -586,6 +605,5 @@ enum GETcoupons{
                 bundle.addItem(product, 1);
             }
         }
-        //someone else do this im lazyyy
     }
 }
