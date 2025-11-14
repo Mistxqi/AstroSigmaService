@@ -87,7 +87,8 @@ public class MainCLI {
         System.out.print("Discount percentage: ");
         int disc = In.nextInt();
 
-        product.applyDiscountPerc(disc);
+        product.applyDiscount(disc);2
+        
 
         System.out.println("New price: Rp." + product.getPrice());
     }

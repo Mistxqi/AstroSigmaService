@@ -20,8 +20,13 @@ interface applyDiscounts{
     //lowk coupons should be another class ngl.
 }
 
+class SortByPrice implements Comparator<Products>{
+        public int compare(Products a, Products b){
+            return (int) (a.getPrice() - b.getPrice());
+        }
+    }
 
-public class Products implements applyDiscounts{
+public class Products implements applyDiscounts, Comparable<Products> {
 
     float price;
     int stock;
@@ -79,6 +84,7 @@ public class Products implements applyDiscounts{
     // public String toString(){
     //     return name + "Price: $" + price +", Stock : "+ stock; 
     // }
+
 
 }
 
@@ -369,6 +375,7 @@ class BundleBuy extends Products {
             break;
         }
         List<Products> allProducts = new ArrayList<>(ListsProduct.getProductList().keySet());
+        Collections.sort(allProducts, new SortByPrice());
 
         for (int i = 0; i < amt; i++) {
             int index = 1;
@@ -432,6 +439,7 @@ class BundleBuy extends Products {
     
     }
 }
+
 
 class ListsProduct {
     private static HashMap<Products, ItemCategory> productList = new HashMap<>();
@@ -568,10 +576,14 @@ enum GETcoupons{
         this.req = req;
     }
 
-    public BundleBuy createCoupon(Products product, int amount){
+    public BundleBuy applyCoupon(Products product, int amount){
+        BundleBuy bundle = new BundleBuy(null, 0, 0, 0, null);
         if (amount < req) {
             System.out.println("Not enough items for this coupon. Required: " + req);
-            return null;
+        } else {
+            for (int i =0; i < this.req; i++) {
+                bundle.addItem(product, 1);
+            }
         }
         //someone else do this im lazyyy
     }
