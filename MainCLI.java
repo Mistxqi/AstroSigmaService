@@ -30,88 +30,65 @@ class Admin extends User {
 class Auth {
     private HashMap<User, String> logins;
     private User loggedin;
+
+    public Auth(HashMap<User, String> logins) {
+        this.logins = logins;
+    }
+
     public User getLoggedin() {
         return loggedin;
     }
 
-    private Auth(HashMap<User, String> logins, User loggedin) {
-        this.logins = logins;
-        this.loggedin = loggedin;
-    }
-    
-    public void createUser(){
+public void createUser(){
         while (true){
             System.out.println("enter new Username: ");
-                String newUser = In.nextLine();
-            System.out.println("enter Password(min 8 length): ");
-                String password = In.nextLine();
+            String newUser = In.nextLine();
 
-            for (User m : logins.keySet()){
-                if (m.getUsername().equalsIgnoreCase(newUser)){
+            System.out.println("enter Password: ");
+            String password = In.nextLine();
+
+            for (User u : logins.keySet()){
+                if (u.getUsername().equalsIgnoreCase(newUser)){
                     System.out.println("Invalid: User already Exists!");
                     continue;
                 }
             }
 
             System.out.println("Is the acc Admin? (Yes/No): ");
-                String isAdmin = In.nextLine();
-            if (isAdmin.equalsIgnoreCase("yes")){
-                Admin a = new Admin(newUser);
-                logins.put(a,password);
-                return;
-            }else {
-                User a = new User(newUser);
-                logins.put(a,password);
-                return;
-            }
-                      
-        }
-    }
+            String isAdmin = In.nextLine();
 
-    public void loginUser(){
-        while (true) { 
-            System.out.println("enter Username: ");
-                String User = In.nextLine();
-            System.out.println("enter Password: ");
-                String password = In.nextLine();
-            
-            for (User m : logins.keySet()){
-                if (m.getUsername().equalsIgnoreCase(User)){
-                    if (logins.get(m)==password) {
-                        loggedin = m;
-                    }
-                }
-            }
-        }
-    }
+            User newAcc = isAdmin.equalsIgnoreCase("yes")
+                          ? new Admin(newUser)
+                          : new User(newUser);
 
-    public void changeUser(){
-        System.out.println("enter Username: ");
-        String newUser = In.nextLine();
-
-        for (User m : logins.keySet()){
-            if (m.getUsername().equalsIgnoreCase(newUser)){
-                System.out.println("Invalid: User already Exists!");
-                continue;
-            }
-            m.setUsername(newUser);
+            logins.put(newAcc, password);
+            System.out.println("Account created!");
             return;
         }
     }
 
-    public void delUser(){
-        System.out.println("Are you sure? (Yes/No)");
-        String choice = In.nextLine();
-        if (choice.equalsIgnoreCase("yes")) {
-            System.out.println("Insert Password: ");
-            String password = In.nextLine();
-            if (logins.get(loggedin).equalsIgnoreCase(password)){
-                System.out.println("User has been Deleted :(");
-                logins.remove(loggedin);
+    public User loginUser() {
+        while (true) {
+            System.out.println("\n===== LOGIN =====");
+            System.out.print("Username: ");
+            String usr = In.nextLine();
+
+            System.out.print("Password: ");
+            String pass = In.nextLine();
+
+            for (User u : logins.keySet()) {
+                if (u.getUsername().equalsIgnoreCase(usr)) {
+                    if (logins.get(u).equals(pass)) {
+                        loggedin = u;
+                        System.out.println("\nLogin successful! Welcome, " + usr);
+                        return u;
+                    }
+                }
             }
+
+            System.out.println("Incorrect login — try again.\n");
         }
     }
-
 
 }
 
@@ -121,39 +98,74 @@ public class MainCLI {
     private static ListsProduct store;
     private static ShoppingCart cart = new ShoppingCart();
 
-    public static void main(String[] args) {
+public static void main(String[] args) {
 
-        HashMap<Products, ItemCategory> initial = new HashMap<>();
-        store = new ListsProduct(initial);
-        
-        seedProducts(initial);
+    HashMap<Products, ItemCategory> initial = new HashMap<>();
+    store = new ListsProduct(initial);
+    seedProducts(initial);
 
-        while (true) {
-            System.out.println("\n===== ASTRO MARKET CLI =====");
-            System.out.println("1. View Products");
-            System.out.println("2. Add Product Into Cart");
-            System.out.println("3. View Cart");
+    // ========== AUTH SETUP ==========
+    HashMap<User, String> accs = new HashMap<>();
+    accs.put(new Admin("root"), "admin123"); // default admin
+    accs.put(new User("guest"), "guest123"); // default user
+
+    Auth auth = new Auth(accs);
+
+    // force login before menu
+    User logged = auth.loginUser();
+    boolean isAdmin = logged instanceof Admin;
+
+    // ========== MAIN LOOP ==========
+    while (true) {
+        System.out.println("\n===== ASTRO MARKET CLI =====");
+        System.out.println("Logged in as: " + logged.getUsername()
+                + (isAdmin ? " (Admin)" : " (User)"));
+
+        System.out.println("1. View Products");
+        System.out.println("2. Add Product Into Cart");
+        System.out.println("3. View Cart");
+
+        if (isAdmin) {
             System.out.println("4. Apply Discount");
             System.out.println("5. Check Stock");
-            System.out.println("6. Exit");
-            System.out.print("Choose option: ");
+        }
 
-            int choice = In.nextInt();
+        System.out.println("6. Exit");
+        System.out.print("Choose option: ");
 
-            switch (choice) {
-                case 1 -> viewProducts();
-                case 2 -> addToCart();
-                case 3 -> cart.viewCart();
-                case 4 -> applyDiscountMenu();
-                case 5 -> checkStockMenu();
-                case 6 -> {
-                    System.out.println("Exiting...");
-                    return;
+        int choice = In.nextInt();
+        In.nextLine(); // clear buffer
+
+        switch (choice) {
+            case 1 -> viewProducts();
+            case 2 -> addToCart();
+            case 3 -> cart.viewCart();
+
+            case 4 -> {
+                if (!isAdmin) {
+                    System.out.println("Unauthorized.");
+                    break;
                 }
-                default -> System.out.println("Invalid choice. Try again.");
+                applyDiscountMenu();
             }
+
+            case 5 -> {
+                if (!isAdmin) {
+                    System.out.println("Unauthorized.");
+                    break;
+                }
+                checkStockMenu();
+            }
+
+            case 6 -> {
+                System.out.println("Exiting...");
+                return;
+            }
+
+            default -> System.out.println("Invalid choice. Try again.");
         }
     }
+}
 
     static void viewProducts() {
         System.out.println("\n--- AVAILABLE PRODUCTS ---");

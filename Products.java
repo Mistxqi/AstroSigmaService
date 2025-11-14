@@ -81,7 +81,7 @@ public class Products implements applyDiscounts{
 
     @Override
     public void applyDiscount(float discount) {
-        price -= price * (1-discount);
+        price -= price * discount;
     }
 }
 
@@ -306,7 +306,7 @@ class BundleBuy extends Products {
         float totalPrice =0; 
         for (Products m : bundle.keySet()){
             float quantity = bundle.get(m);
-            totalPrice = m.getPrice() * quantity;
+            totalPrice += m.getPrice() * quantity;
         }
 
         return totalPrice -= totalPrice * (bundleDisc / 100f);
