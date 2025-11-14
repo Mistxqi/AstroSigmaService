@@ -33,7 +33,7 @@ class User {
     }
 
     public void updateUsername(){
-        
+
     }
 }
 
@@ -43,13 +43,43 @@ class Admin extends User {
         super(username);
     }
 
+    public void delUser(Auth auth, String username)  {
+        HashMap<User, String> logins = auth.getLogins();
+
+        for (User u : logins.keySet()){
+            if (u.getUsername().equalsIgnoreCase(username)) {
+                if (u == this) {
+                    System.out.println("Admin cannot delete themselves!");
+                    return;
+                }
+
+                logins.remove(u);
+                System.out.println("User '" + username + "' deleted successfully.");
+                return;
+            }
+        }
+    System.out.println("User not found.");
+    }
+
+    public void applyDiscountToProduct(Products product, float discount) {
+        product.applyDiscount(discount);
+        System.out.println("Applied discount. New price: " + product.getPrice());
+    }
+
+    public void checkProductStock(Products product) {
+        if (product instanceof checkStock s) {
+            System.out.println(product.getName() + " stock: " + s.checkInStock());
+        } else {
+            System.out.println("Product does not support stock checking.");
+        }
+    }
     //admin methods here, like check expiry, discount, etc.
 
 }
 
 class Auth {
     private HashMap<User, String> logins;
-    private User loggedin;
+    private User loggedIn;
 
     public Auth() {
     }
@@ -59,7 +89,7 @@ class Auth {
     }
 
     public User getLoggedin() {
-        return loggedin;
+        return loggedIn;
     }
 
     public void createUser(){
@@ -106,7 +136,7 @@ class Auth {
             for (User u : logins.keySet()) {
                 if (u.getUsername().equalsIgnoreCase(usr)) {
                     if (logins.get(u).equals(pass)) {
-                        loggedin = u;
+                        loggedIn = u;
                         System.out.println("\nLogin successful! Welcome, " + usr);
                         return u;
                     }
@@ -125,9 +155,9 @@ class Auth {
             System.out.println("Insert Password: ");
             String password = In.nextLine();
 
-            if (logins.get(loggedin).equalsIgnoreCase(password)){
+            if (logins.get(loggedIn).equalsIgnoreCase(password)){
                 System.out.println("User has been Deleted :(");
-                logins.remove(loggedin);
+                logins.remove(loggedIn);
             }
 
         }
