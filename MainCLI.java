@@ -15,6 +15,26 @@ class User {
         this.username = username;
     }
     //user methods here, normal stuff :3
+
+    public void changePassword(Auth auth){
+        HashMap<User, String> logins = auth.getLogins();
+
+        System.out.println("Input Current Password: ");
+            String curPass = In.nextLine();
+        if (logins.get(this) != curPass){
+            System.out.println("Incorrect old password!");
+        } else {
+            System.out.println("Input New Password: ");
+                String newPass = In.nextLine();
+            logins.put(this, newPass);
+             System.out.println("Password updated successfully.");
+        }
+
+    }
+
+    public void updateUsername(){
+        
+    }
 }
 
 class Admin extends User {
@@ -32,6 +52,10 @@ class Auth {
     private User loggedin;
 
     public Auth() {
+    }
+
+    public HashMap<User,String> getLogins(){
+        return logins;
     }
 
     public User getLoggedin() {
@@ -105,7 +129,7 @@ class Auth {
                 System.out.println("User has been Deleted :(");
                 logins.remove(loggedin);
             }
-            
+
         }
     }
 

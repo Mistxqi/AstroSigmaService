@@ -418,13 +418,10 @@ class BundleBuy extends Products {
             bundle.put(selProduct,quanChoice);
 
         }
-        System.out.println("Apply Discount?\n 1. Coupon\n 2. Percentage \n 3. Flat \n 4. No");
-        int choice = In.nextInt();
+        System.out.println("Apply Discount?\n 1. Percentage \n 2. Flat \n 3. No");
+        choice = In.nextInt();
         switch (choice) {
             case 1:
-                return null;
-            //Ill do this after fixing the Coupons
-            case 2:
                 System.out.println("How many %?");
                 float disct = In.nextInt()/100;
 
@@ -435,7 +432,7 @@ class BundleBuy extends Products {
 
                 return new BundleBuy(name, 1 , 0,disct, bundle);
 
-            case 3:
+            case 2:
                 System.out.println("How Much?");
                 disct = In.nextInt();
 
