@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
@@ -174,6 +173,8 @@ class Perishable extends Products implements checkStock{
                     return stock-bad;
                 default:
                     System.out.println("Proper Output Pls");
+                    System.out.println("what? \n1. Exclude bad Produce \n2. Include bad Produce");
+                    choice = In.nextInt();
                     break;
             }
         }
@@ -193,6 +194,8 @@ class Perishable extends Products implements checkStock{
 
                 default:
                     System.out.println("Proper Output Pls");
+                    System.out.println("what? \n1. Exclude bad Produce \n2. Include bad Produce");
+                    choice = In.nextInt();
                     break;
             }
         }
@@ -235,7 +238,9 @@ class NonPerishable extends Products implements checkStock{
                 case 3: 
                     return stock+amtWarehouse;
                 default:
-                System.out.println("Proper Output Pls");
+                    System.out.println("Proper Output Pls");
+                    System.out.println("where? \n1. In Store \n2. In Warehouse \n3. In total");
+                    choice = In.nextInt();
                     break;
             }
         }
@@ -259,68 +264,103 @@ class NonPerishable extends Products implements checkStock{
 class BundleBuy extends Products {
     
     int bundleDisc;
-    ArrayList<Products> bundle;
+    HashMap<Products, Integer> bundle;
 
-    public BundleBuy(String name, int stock, float price, int bundleDisc, ArrayList bundle) {
-        super(name, stock, price);
+    public BundleBuy(String name, int stock, float price, int bundleDisc, HashMap bundle) {
+        super(name, 1, 0);
         this.bundleDisc = bundleDisc;
         this.bundle = bundle;
+        this.price = getBundlePrice();
     }
 
     public float getBundleDisc() {
         return bundleDisc;
     }
 
-    public ArrayList<Products> getBundle() {
+    public HashMap<Products, Integer> getBundle() {
         return bundle;
     }
 
-    public void addItem(Products product) {
-        bundle.add(product);
+    public void addItem(Products product, int quantity) {
+        bundle.put(product, quantity);
     }
 
     public void setBundleDisc(int bundleDisc) {
         this.bundleDisc = bundleDisc;
     }
     
-    public int getBundlePrice(){
-        int totalPrice =0; 
-        for (Products m : bundle){
-            totalPrice =(int) + m.getPrice();
+    public float getBundlePrice(){
+        float totalPrice =0; 
+        for (Products m : bundle.keySet()){
+            float quantity = bundle.get(m);
+            totalPrice = m.getPrice() * quantity;
         }
-        
+
         return totalPrice -= totalPrice * (bundleDisc / 100f);
     }
 
+
+    // public BundleBuy createBundle(){
+    //     ArrayList<Products> savedItems = new ArrayList<>();
+    //     int amt =0;
+    //         System.out.println("Whats the name of the Bundle");
+    //         String name = In.nextLine();
+    //     while (true){
+    //         System.out.println("How many Items? (Max 4)");
+    //         amt = In.nextInt();
+    //         if (amt > 4) {
+    //             System.out.println("Too Large. Retry");
+    //             continue;
+    //         }
+    //         break;
+    //     }
+    //     List<Products> allProducts = new ArrayList<>(ListsProduct.getProductList().keySet());
+    //     for (int i = 0; i < amt; i++) {
+    //         int index = 1;
+    //         for (Products m : ListsProduct.getProductList().keySet()){
+    //             System.out.println(index + m.getName());
+    //         }
+    //         int choice = In.nextInt();
+    //         if (choice >= 1 && choice <= allProducts.size()) {
+    //             for (Products m : savedItems){
+    //                 if (savedItems.contains(m)) {
+    //                     System.out.println("Invalid choice: Item already in Bundle.");
+    //                 }else{
+    //                     savedItems.add(allProducts.get(choice-1));
+    //                 }
+    //             }
+    //         } else {
+    //             System.out.println("Invalid choice, skipping.");
+    //         }
+    //     }
+
+    //     System.out.println("Apply Discount? \n 1.yes \n 2.no");
+    //     int choice = In.nextInt();
+        
+    //     BundleBuy bundle = new BundleBuy("", amt, amt, amt, savedItems);
+    // NAHH IM REDOING THISS
+    // }
+
     public BundleBuy createBundle(){
-        ArrayList<Products> savedItems = new ArrayList<>();
+        HashMap<Products,Integer> bundled = new HashMap<>();
         int amt =0;
             System.out.println("Whats the name of the Bundle");
+            String name = In.nextLine();
         while (true){
             System.out.println("How many Items? (Max 4)");
             amt = In.nextInt();
             if (amt > 4) {
                 System.out.println("Too Large. Retry");
+                continue;
             }
             break;
         }
         List<Products> allProducts = new ArrayList<>(ListsProduct.getProductList().keySet());
-        for (int i = 0; i < amt; i++) {
-            int index = 1;
-            for (Products m : ListsProduct.getProductList().keySet()){
-                System.out.println(index + m.getName());
-            }
-            int choice = In.nextInt();
-            if (choice >= 1 && choice <= allProducts.size()) {
-                savedItems.add(allProducts.get(choice-1));
-            } else {
-                System.out.println("Invalid choice, skipping.");
-            }
-        }
 
-        System.out.println("Apply Discount? \n 1.yes \n 2.no");
-        //Darvell, pls finish this partttttt
-        BundleBuy bundle = new BundleBuy("", amt, amt, amt, savedItems);
+        for (int i = 0; i < amt; i++) {
+            int index = i+1;
+            
+        }
     }
 }
 
@@ -337,7 +377,12 @@ class ListsProduct {
     }
 
     public ItemCategory findCategory(String name){
-        return productList.get(name);
+        for (Products m : productList.keySet()){
+            if (m.getName().equalsIgnoreCase(name)){
+                return productList.get(m);
+            }
+        }
+        return null;
     }
 
     public void sortCategory(ItemCategory category){
@@ -394,7 +439,8 @@ class ListsProduct {
     public void removeItem(String productName) {
         for (int i = 0; i < cart.size(); i++) {
             CartItem item = cart.get(i);
-            if (item.product.name.equalsIgnoreCase(productName)) {
+             if (item != null && item.product != null && 
+            item.product.name.equalsIgnoreCase(productName)) {
                 cart.remove(i);
                 System.out.println(productName + " removed from the cart");
                 return;
@@ -454,8 +500,7 @@ enum GETcoupons{
     }
 
     public BundleBuy applyCoupon(Products product, int amount){
-        int totalPrice = 0;
-        ArrayList<Products> bundle = new ArrayList<>();
+        HashMap<Products,Integer> bundle = new HashMap<>();
         int required = this.req;
         if (amount < required) {
             System.out.println("Not enough items");
@@ -463,10 +508,9 @@ enum GETcoupons{
         }
         
         for (int i = 0; i < this.req; i++){
-                bundle.add(product);
-                totalPrice += product.getPrice();
+                bundle.put(product, amount);
         }
-        BundleBuy bund = new BundleBuy("Bundle: " + product.name, 1 ,totalPrice, this.disc, bundle);
+        BundleBuy bund = new BundleBuy("Bundle: " + product.name, 1 ,0, this.disc, bundle);
         return bund; 
         //String name, int stock, float price, int bundleDisc, ArrayList bundle)
     }
