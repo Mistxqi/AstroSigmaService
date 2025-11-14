@@ -38,7 +38,9 @@ class SortByQty implements Comparator<Products>{
     }
 }
 
-public class Products implements applyDiscounts, Comparable<Products> {
+
+
+public class Products implements applyDiscounts{
 
     private float price;
     private int stock;
@@ -81,29 +83,15 @@ public class Products implements applyDiscounts, Comparable<Products> {
     public void applyDiscount(float discount) {
         price -= price * (1-discount);
     }
-    // @Override
-    // public void applyCoupon(Coupon coupon, int quantity){
-    //     int required=0;
-    //     if (quantity==coupon.req){
-            
-    //     }
 
-    //     if (quantity >= required){
-    //         price -= price * (coupon.disc / 100f); 
-    //     }
-    // }
-
-    // public String toString(){
-    //     return name + "Price: $" + price +", Stock : "+ stock; 
-    // }
-
+    
 
 }
 
 class Perishable extends Products implements checkStock{
     
-    int[] ExpDate;
-    int bad;
+    private int[] ExpDate;
+    private int bad;
 
     public Perishable(String name, int stock, float price, int[] ExpDate, int bad) {
         super(name, stock, price);
@@ -230,8 +218,8 @@ class Perishable extends Products implements checkStock{
 }
 
 class NonPerishable extends Products implements checkStock{
-    String manufacturer;
-    int amtWarehouse;
+    private String manufacturer;
+    private int amtWarehouse;
 
     public NonPerishable(String name, int stock, float price, String manufacturer, int amtWarehouse) {
         super(name, stock, price);
@@ -285,9 +273,9 @@ class NonPerishable extends Products implements checkStock{
 
 class BundleBuy extends Products {
     
-    float bundleDisc;
+    private float bundleDisc;
+    private HashMap<Products, Integer> bundle;
     private float price;
-    HashMap<Products, Integer> bundle;
 
     public BundleBuy(String name, int stock, float price, float bundleDisc, HashMap bundle) {
         super(name, 1, 0);
