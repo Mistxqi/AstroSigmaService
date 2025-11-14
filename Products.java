@@ -28,9 +28,9 @@ class SortByPrice implements Comparator<Products>{
 
 public class Products implements applyDiscounts, Comparable<Products> {
 
-    float price;
-    int stock;
-    String name;
+    private float price;
+    private int stock;
+    private String name;
 
     public Products(String name, int stock, float price) {
         this.name = name;
@@ -178,9 +178,9 @@ class Perishable extends Products implements checkStock{
         while (true){
             switch (choice) {
                 case 1:
-                    return stock;
+                    return getStock();
                 case 2: 
-                    return stock-bad;
+                    return getStock()-bad;
                 default:
                     System.out.println("Proper Output Pls");
                     System.out.println("what? \n1. Exclude bad Produce \n2. Include bad Produce");
@@ -197,10 +197,10 @@ class Perishable extends Products implements checkStock{
         while (true){
             switch (choice) {
                 case 1:
-                    return (stock > 0);
+                    return (getStock() > 0);
                 
                 case 2: 
-                    return ((stock-bad) > 0);
+                    return ((getStock()-bad) > 0);
 
                 default:
                     System.out.println("Proper Output Pls");
@@ -213,7 +213,7 @@ class Perishable extends Products implements checkStock{
 
     @Override
     public String toString(){
-        return name + "Price: $" + price +", Stock : "+ stock+"\nBest Before (DD/MM/YY): " + Arrays.toString(ExpDate); 
+        return getName() + "Price: $" + getPrice() +", Stock : "+ getStock()+"\nBest Before (DD/MM/YY): " + Arrays.toString(ExpDate); 
     }
 }
 
@@ -242,11 +242,11 @@ class NonPerishable extends Products implements checkStock{
         while (true){
                 switch (choice) {
                 case 1:
-                    return stock;
+                    return getStock();
                 case 2: 
                     return amtWarehouse;
                 case 3: 
-                    return stock+amtWarehouse;
+                    return getStock()+amtWarehouse;
                 default:
                     System.out.println("Proper Output Pls");
                     System.out.println("where? \n1. In Store \n2. In Warehouse \n3. In total");
@@ -258,7 +258,7 @@ class NonPerishable extends Products implements checkStock{
 
     @Override
     public boolean isInStock(){
-        if (stock+amtWarehouse > 0){
+        if (getStock()+amtWarehouse > 0){
             return true;
         } else {
             return false;
@@ -267,13 +267,14 @@ class NonPerishable extends Products implements checkStock{
 
     @Override
     public String toString(){
-        return name + "Price: $" + price +", Stock : "+ stock+"\nMade By: " + manufacturer; 
+        return getName() + "Price: $" + getPrice() +", Stock : "+ getStock()+"\nMade By: " + manufacturer; 
     }
 }
 
 class BundleBuy extends Products {
     
     float bundleDisc;
+    private float price;
     HashMap<Products, Integer> bundle;
 
     public BundleBuy(String name, int stock, float price, float bundleDisc, HashMap bundle) {
@@ -465,7 +466,7 @@ class ListsProduct {
     public void sortCategory(ItemCategory category){
         for (Products a : productList.keySet()){
             if (productList.get(a) == category){
-                System.out.println(a.name + " is part of " + category);
+                System.out.println(a.getName() + " is part of " + category);
             }
         }
     }
@@ -494,7 +495,7 @@ class ListsProduct {
 
         @Override
         public String toString() {
-            return product.name + " Quantity: " + quantity + " Price : Rp." + product.getPrice() + " Notes : " + (notes == null ? "None" : notes);
+            return product.getName() + " Quantity: " + quantity + " Price : Rp." + product.getPrice() + " Notes : " + (notes == null ? "None" : notes);
 
         }
     }
@@ -506,18 +507,18 @@ class ListsProduct {
                     item.notes = notes;
 
                 }
-                System.out.println(product.name + " quantity has been updated to " + item.quantity);
+                System.out.println(product.getName() + " quantity has been updated to " + item.quantity);
                 return;
             }
         }
         cart.add(new CartItem(product, quantity, notes));
-        System.out.println(product.name + " added to cart.");
+        System.out.println(product.getName() + " added to cart.");
     }
     public void removeItem(String productName) {
         for (int i = 0; i < cart.size(); i++) {
             CartItem item = cart.get(i);
              if (item != null && item.product != null && 
-            item.product.name.equalsIgnoreCase(productName)) {
+            item.product.getName().equalsIgnoreCase(productName)) {
                 cart.remove(i);
                 System.out.println(productName + " removed from the cart");
                 return;
