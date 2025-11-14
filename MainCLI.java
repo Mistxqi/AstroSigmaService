@@ -1,5 +1,73 @@
 import java.util.*;
 
+class User {
+    private String username;
+
+    public User(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    //user methods here, normal stuff :3
+}
+
+class Admin extends User {
+
+    public Admin(String username) {
+        super(username);
+    }
+
+    //admin methods here, like check expiry, discount, etc.
+
+}
+
+class Auth {
+    private HashMap<User, String> logins;
+    private Auth(HashMap<User, String> logins) {
+        this.logins = logins;
+    }
+    
+    public void createUser(){
+        while (true){
+            System.out.println("enter new Username: ");
+                String newUser = In.nextLine();
+            System.out.println("enter Password(min 8 length): ");
+                String password = In.nextLine();
+
+            for (User m : logins.keySet()){
+                if (m.getUsername().equalsIgnoreCase(newUser)){
+                    System.out.println("Invalid: User already Exists!");
+                    continue;
+                }
+            }
+
+            System.out.println("Is the acc Admin? (Yes/No): ");
+                String isAdmin = In.nextLine();
+            if (isAdmin.equalsIgnoreCase("yes")){
+                Admin a = new Admin(newUser);
+                logins.put(a,password);
+            }else {
+                User a = new User(newUser);
+                logins.put(a,password);
+            }
+                      
+        }
+    }
+
+    public void loginUser(){
+
+    }
+
+}
+
+
 public class MainCLI {
 
     private static ListsProduct store;
@@ -9,7 +77,7 @@ public class MainCLI {
 
         HashMap<Products, ItemCategory> initial = new HashMap<>();
         store = new ListsProduct(initial);
-
+        
         seedProducts(initial);
 
         while (true) {
@@ -87,8 +155,7 @@ public class MainCLI {
         System.out.print("Discount percentage: ");
         int disc = In.nextInt();
 
-        product.applyDiscount(disc);2
-        
+        product.applyDiscount(disc);
 
         System.out.println("New price: Rp." + product.getPrice());
     }
