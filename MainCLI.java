@@ -99,6 +99,20 @@ class Auth {
         }
     }
 
+    public void delUser(){
+        System.out.println("Are you sure? (Yes/No)");
+        String choice = In.nextLine();
+        if (choice.equalsIgnoreCase("yes")) {
+            System.out.println("Insert Password: ");
+            String password = In.nextLine();
+            if (logins.get(loggedin).equalsIgnoreCase(password)){
+                System.out.println("User has been Deleted :(");
+                logins.remove(loggedin);
+            }
+        }
+    }
+
+
 }
 
 

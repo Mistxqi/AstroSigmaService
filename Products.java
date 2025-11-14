@@ -607,5 +607,5 @@ enum GETcoupons{
             + product.getName() + " x" + amount);
 
     return bundle;
-}
+    }
 }
