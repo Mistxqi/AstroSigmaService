@@ -43,7 +43,7 @@ public class MainCLI {
         System.out.println("\n--- AVAILABLE PRODUCTS ---");
         int i = 1;
         for (Products p : ListsProduct.getProductList().keySet()) {
-            System.out.println(i++ + ". " + p.getName() + " — Rp." + p.getPrice());
+            System.out.println(i++ + ". " + p.getName() + "  Rp." + p.getPrice());
         }
     }
 
