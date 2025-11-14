@@ -31,10 +31,6 @@ class User {
         }
 
     }
-
-    public void updateUsername(){
-
-    }
 }
 
 class Admin extends User {
@@ -59,19 +55,6 @@ class Admin extends User {
             }
         }
     System.out.println("User not found.");
-    }
-
-    public void applyDiscountToProduct(Products product, float discount) {
-        product.applyDiscount(discount);
-        System.out.println("Applied discount. New price: " + product.getPrice());
-    }
-
-    public void checkProductStock(Products product) {
-        if (product instanceof checkStock s) {
-            System.out.println(product.getName() + " stock: " + s.checkInStock());
-        } else {
-            System.out.println("Product does not support stock checking.");
-        }
     }
     //admin methods here, like check expiry, discount, etc.
 
