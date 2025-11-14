@@ -2,6 +2,7 @@ import java.util.*;
 
 class User {
     private String username;
+    private boolean isLoggedIn;
 
     public User(String username) {
         this.username = username;
@@ -13,6 +14,14 @@ class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public boolean isIsLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setIsLoggedIn(boolean isLoggedIn) {
+        this.isLoggedIn = isLoggedIn;
     }
 
     //user methods here, normal stuff :3
@@ -53,16 +62,31 @@ class Auth {
             if (isAdmin.equalsIgnoreCase("yes")){
                 Admin a = new Admin(newUser);
                 logins.put(a,password);
+                return;
             }else {
                 User a = new User(newUser);
                 logins.put(a,password);
+                return;
             }
                       
         }
     }
 
     public void loginUser(){
-
+        while (true) { 
+            System.out.println("enter Username: ");
+                String User = In.nextLine();
+            System.out.println("enter Password: ");
+                String password = In.nextLine();
+            
+                for (User m : logins.keySet()){
+                    if (m.getUsername().equalsIgnoreCase(User)){
+                        if (logins.get(m)==password) {
+                            
+                        }
+                    }
+                }
+        }
     }
 
 }
