@@ -31,15 +31,14 @@ class Auth {
     private HashMap<User, String> logins;
     private User loggedin;
 
-    public Auth(HashMap<User, String> logins) {
-        this.logins = logins;
+    public Auth() {
     }
 
     public User getLoggedin() {
         return loggedin;
     }
 
-public void createUser(){
+    public void createUser(){
         while (true){
             System.out.println("enter new Username: ");
             String newUser = In.nextLine();
@@ -66,6 +65,10 @@ public void createUser(){
             return;
         }
     }
+    
+    public void createUser(User user, String password){
+        logins.put(user, password);
+    }
 
     public User loginUser() {
         while (true) {
@@ -90,6 +93,22 @@ public void createUser(){
         }
     }
 
+    public void delUser(){
+        System.out.println("Are you sure? (Yes/No)");
+        String choice = In.nextLine();
+
+        if (choice.equalsIgnoreCase("yes")) {
+            System.out.println("Insert Password: ");
+            String password = In.nextLine();
+
+            if (logins.get(loggedin).equalsIgnoreCase(password)){
+                System.out.println("User has been Deleted :(");
+                logins.remove(loggedin);
+            }
+            
+        }
+    }
+
 }
 
 
@@ -105,11 +124,11 @@ public static void main(String[] args) {
     seedProducts(initial);
 
     // ========== AUTH SETUP ==========
-    HashMap<User, String> accs = new HashMap<>();
-    accs.put(new Admin("root"), "admin123"); // default admin
-    accs.put(new User("guest"), "guest123"); // default user
+    Auth auth = new Auth();
+    auth.createUser(new Admin("root"), "admin123"); // default admin
+    auth.createUser(new User("guest"), "guest123"); // default user
 
-    Auth auth = new Auth(accs);
+    
 
     // force login before menu
     User logged = auth.loginUser();
