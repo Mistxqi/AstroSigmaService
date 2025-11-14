@@ -14,9 +14,9 @@ interface checkStock {
 
 interface applyDiscounts{
     //Percentage Discount
-    public void applyDiscountPerc(int discount);
+    public void applyDiscount(float discount);
     //Flat Discount
-    public void applyDiscountFlat(int discount);
+    public void applyDiscount(int discount);
     //lowk coupons should be another class ngl.
 }
 
@@ -43,6 +43,10 @@ public class Products implements applyDiscounts{
         return itemCategory;
     }
 
+    public int getStock(){
+        return this.stock;
+    }
+
     public String getName(){
         return this.name;
     }
@@ -52,13 +56,13 @@ public class Products implements applyDiscounts{
     }
 
     @Override
-    public void applyDiscountFlat(int  discount){
+    public void applyDiscount(int  discount){
         price -= discount;
     }
 
     @Override
-    public void applyDiscountPerc(int discount) {
-        price -= price * (discount / 100f);
+    public void applyDiscount(float discount) {
+        price -= price * (1-discount);
     }
     // @Override
     // public void applyCoupon(Coupon coupon, int quantity){
@@ -263,10 +267,10 @@ class NonPerishable extends Products implements checkStock{
 
 class BundleBuy extends Products {
     
-    int bundleDisc;
+    float bundleDisc;
     HashMap<Products, Integer> bundle;
 
-    public BundleBuy(String name, int stock, float price, int bundleDisc, HashMap bundle) {
+    public BundleBuy(String name, int stock, float price, float bundleDisc, HashMap bundle) {
         super(name, 1, 0);
         this.bundleDisc = bundleDisc;
         this.bundle = bundle;
@@ -344,23 +348,83 @@ class BundleBuy extends Products {
     public BundleBuy createBundle(){
         HashMap<Products,Integer> bundled = new HashMap<>();
         int amt =0;
+
             System.out.println("Whats the name of the Bundle");
             String name = In.nextLine();
+
         while (true){
             System.out.println("How many Items? (Max 4)");
             amt = In.nextInt();
+
             if (amt > 4) {
                 System.out.println("Too Large. Retry");
                 continue;
             }
+
             break;
         }
         List<Products> allProducts = new ArrayList<>(ListsProduct.getProductList().keySet());
 
         for (int i = 0; i < amt; i++) {
-            int index = i+1;
-            
+            int index = 1;
+            for (Products m : ListsProduct.getProductList().keySet()){
+                System.out.println(index + m.getName() + "- $ " + m.getPrice() );
+                index ++;
+            }
+            System.out.println("Select product " + (i + 1) + ":");
+            int prodChoice = In.nextInt();
+
+            if (prodChoice < 1 || prodChoice > allProducts.size()){
+                System.out.println("Invalid: Out of Bounds pls Retry");
+                i--;
+                continue;
+            }
+            Products selProduct = allProducts.get(prodChoice - 1);
+
+            System.out.println("Select Quantity" + (i + 1) + ":");
+            int quanChoice = In.nextInt();
+            if (quanChoice < 1 || quanChoice > selProduct.getStock()){
+                System.out.println("Invalid: Out of Bounds pls Retry");
+                i--;
+                continue;
+            }
+
+            bundle.put(selProduct,quanChoice);
+
         }
+        System.out.println("Apply Discount?\n 1. Coupon\n 2. Percentage \n 3. Flat \n 4. No");
+        int choice = In.nextInt();
+        switch (choice) {
+            case 1:
+                return null;
+            //Ill do this after fixing the Coupons
+            case 2:
+                System.out.println("How many %?");
+                float disct = In.nextInt()/100;
+
+                if ( disct < 0.01 || disct > 0.75){
+                    System.out.println("Invalid: Out of Bounds, setting to 0% blehh");
+                    disct =0;
+                }
+
+                return new BundleBuy(name, 1 , 0,disct, bundle);
+
+            case 3:
+                System.out.println("How Much?");
+                disct = In.nextInt();
+
+                if ( disct < 1 || disct > this.getBundlePrice()){
+                    System.out.println("Invalid: Out of Bounds, setting to 0 blehhh");
+                    disct = 0;
+                }
+
+                return new BundleBuy(name, 1 , 0,disct, bundle);
+
+            default:
+                System.out.println("no discounts Applied.");
+                return new BundleBuy(name, 1 , 0, 0, bundle);
+        }
+    
     }
 }
 
@@ -499,19 +563,7 @@ enum GETcoupons{
         this.req = req;
     }
 
-    public BundleBuy applyCoupon(Products product, int amount){
-        HashMap<Products,Integer> bundle = new HashMap<>();
-        int required = this.req;
-        if (amount < required) {
-            System.out.println("Not enough items");
-            return null;
-        }
+    public void applyCoupon(Products product, int amount){
         
-        for (int i = 0; i < this.req; i++){
-                bundle.put(product, amount);
-        }
-        BundleBuy bund = new BundleBuy("Bundle: " + product.name, 1 ,0, this.disc, bundle);
-        return bund; 
-        //String name, int stock, float price, int bundleDisc, ArrayList bundle)
     }
 }
