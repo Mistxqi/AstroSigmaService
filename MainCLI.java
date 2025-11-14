@@ -64,7 +64,8 @@ class Auth {
     private HashMap<User, String> logins;
     private User loggedIn;
 
-    public Auth() {
+    public Auth(HashMap<User,String>logins) {
+        this.logins=logins
     }
 
     public HashMap<User,String> getLogins(){
@@ -161,7 +162,8 @@ public static void main(String[] args) {
     seedProducts(initial);
 
     // ========== AUTH SETUP ==========
-    Auth auth = new Auth();
+    HashMap<User, String> accs = new HashMap<>();
+    Auth auth = new Auth(accs);
     auth.createUser(new Admin("root"), "admin123"); // default admin
     auth.createUser(new User("guest"), "guest123"); // default user
 
