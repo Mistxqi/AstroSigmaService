@@ -38,7 +38,7 @@ class SortByQty implements Comparator<Products>{
     }
 }
 
-public class Products implements applyDiscounts, Comparable<Products> {
+public class Products implements applyDiscounts{
 
     private float price;
     private int stock;
@@ -102,8 +102,8 @@ public class Products implements applyDiscounts, Comparable<Products> {
 
 class Perishable extends Products implements checkStock{
     
-    int[] ExpDate;
-    int bad;
+    private int[] ExpDate;
+    private int bad;
 
     public Perishable(String name, int stock, float price, int[] ExpDate, int bad) {
         super(name, stock, price);
@@ -230,8 +230,8 @@ class Perishable extends Products implements checkStock{
 }
 
 class NonPerishable extends Products implements checkStock{
-    String manufacturer;
-    int amtWarehouse;
+    private String manufacturer;
+    private int amtWarehouse;
 
     public NonPerishable(String name, int stock, float price, String manufacturer, int amtWarehouse) {
         super(name, stock, price);
@@ -285,9 +285,9 @@ class NonPerishable extends Products implements checkStock{
 
 class BundleBuy extends Products {
     
-    float bundleDisc;
+    private float bundleDisc;
+    private HashMap<Products, Integer> bundle;
     private float price;
-    HashMap<Products, Integer> bundle;
 
     public BundleBuy(String name, int stock, float price, float bundleDisc, HashMap bundle) {
         super(name, 1, 0);
@@ -406,6 +406,7 @@ class BundleBuy extends Products {
                 break;
         }
 
+
         for (int i = 0; i < amt; i++) {
             int index = 1;
             for (Products m : ListsProduct.getProductList().keySet()){
@@ -434,7 +435,7 @@ class BundleBuy extends Products {
 
         }
         System.out.println("Apply Discount?\n 1. Coupon\n 2. Percentage \n 3. Flat \n 4. No");
-        int choice = In.nextInt();
+        choice = In.nextInt();
         switch (choice) {
             case 1:
                 return null;
@@ -605,25 +606,6 @@ enum GETcoupons{
         this.req = req;
     }
 
-
-    public BundleBuy applyCoupon(Products product, int amount) {
-    if (amount < req) {
-        System.out.println("Not enough items for this coupon. Required at least: " + req);
-        return null;
-    }
-
-    HashMap<Products, Integer> bundleMap = new HashMap<>();
-    bundleMap.put(product, amount);
-
-    String bundleName = product.getName() + " x" + amount + " (" + this.name() + ")";
-    BundleBuy bundle = new BundleBuy(bundleName, 1, 0, disc, bundleMap);
-
-    System.out.println("Applied coupon " + this.name() + " (" + disc + "% off) to "
-            + product.getName() + " x" + amount);
-
-    return bundle;
-}
-
     public BundleBuy applyCoupon(Products product, int amount){
         BundleBuy bundle = new BundleBuy(null, 0, 0, 0, null);
         if (amount < req) {
@@ -633,5 +615,6 @@ enum GETcoupons{
                 bundle.addItem(product, 1);
             }
         }
+        //someone else do this im lazyyy
     }
 }
