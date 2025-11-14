@@ -83,9 +83,6 @@ public class Products implements applyDiscounts{
     public void applyDiscount(float discount) {
         price -= price * (1-discount);
     }
-
-    
-
 }
 
 class Perishable extends Products implements checkStock{
@@ -611,15 +608,4 @@ enum GETcoupons{
 
     return bundle;
 }
-
-    public BundleBuy applyCoupon(Products product, int amount){
-        BundleBuy bundle = new BundleBuy(null, 0, 0, 0, null);
-        if (amount < req) {
-            System.out.println("Not enough items for this coupon. Required: " + req);
-        } else {
-            for (int i =0; i < this.req; i++) {
-                bundle.addItem(product, 1);
-            }
-        }
-    }
 }

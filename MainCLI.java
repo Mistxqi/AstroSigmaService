@@ -2,7 +2,6 @@ import java.util.*;
 
 class User {
     private String username;
-    private boolean isLoggedIn;
 
     public User(String username) {
         this.username = username;
@@ -15,15 +14,6 @@ class User {
     public void setUsername(String username) {
         this.username = username;
     }
-
-    public boolean isIsLoggedIn() {
-        return isLoggedIn;
-    }
-
-    public void setIsLoggedIn(boolean isLoggedIn) {
-        this.isLoggedIn = isLoggedIn;
-    }
-
     //user methods here, normal stuff :3
 }
 
@@ -39,8 +29,14 @@ class Admin extends User {
 
 class Auth {
     private HashMap<User, String> logins;
-    private Auth(HashMap<User, String> logins) {
+    private User loggedin;
+    public User getLoggedin() {
+        return loggedin;
+    }
+
+    private Auth(HashMap<User, String> logins, User loggedin) {
         this.logins = logins;
+        this.loggedin = loggedin;
     }
     
     public void createUser(){
@@ -79,13 +75,27 @@ class Auth {
             System.out.println("enter Password: ");
                 String password = In.nextLine();
             
-                for (User m : logins.keySet()){
-                    if (m.getUsername().equalsIgnoreCase(User)){
-                        if (logins.get(m)==password) {
-                            
-                        }
+            for (User m : logins.keySet()){
+                if (m.getUsername().equalsIgnoreCase(User)){
+                    if (logins.get(m)==password) {
+                        loggedin = m;
                     }
                 }
+            }
+        }
+    }
+
+    public void changeUser(){
+        System.out.println("enter Username: ");
+        String newUser = In.nextLine();
+
+        for (User m : logins.keySet()){
+            if (m.getUsername().equalsIgnoreCase(newUser)){
+                System.out.println("Invalid: User already Exists!");
+                continue;
+            }
+            m.setUsername(newUser);
+            return;
         }
     }
 
