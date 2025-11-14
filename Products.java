@@ -286,7 +286,12 @@ class BundleBuy extends Products {
     }
 
     public void addItem(Products product, int quantity) {
-        bundle.put(product, quantity);
+        if (bundle.containsKey(product)){
+            int curQuant = bundle.get(product);
+            bundle.put(product, curQuant + quantity);
+        } else {
+            bundle.put(product, quantity);
+        }
     }
 
     public void setBundleDisc(int bundleDisc) {
@@ -563,7 +568,11 @@ enum GETcoupons{
         this.req = req;
     }
 
-    public void applyCoupon(Products product, int amount){
-        
+    public BundleBuy createCoupon(Products product, int amount){
+        if (amount < req) {
+            System.out.println("Not enough items for this coupon. Required: " + req);
+            return null;
+        }
+        //someone else do this im lazyyy
     }
 }
