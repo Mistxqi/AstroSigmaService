@@ -65,7 +65,7 @@ class Auth {
     private User loggedIn;
 
     public Auth(HashMap<User,String>logins) {
-        this.logins=logins
+        this.logins=logins;
     }
 
     public HashMap<User,String> getLogins(){
