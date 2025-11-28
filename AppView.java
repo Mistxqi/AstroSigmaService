@@ -153,16 +153,15 @@ public class AppView {
             } else if (passwordField.getText().length() < 7){
                 displayAlertScreen("Password Minimum 8 letters!");
             }else {
-
-            User t = new User(userNameField.getText(),passwordField.getText(), UserType.CUSTOMER);
-            boolean valid = this.controller.login(t);
-            if (valid) {
-                stage.close();
-                displayCustomerScreen(t);
-            } else {
-                displayAlertScreen("Invalid Credentials!");
-            }
-            //add more later
+                User t = new User(userNameField.getText(),passwordField.getText(), UserType.CUSTOMER);
+                boolean valid = this.controller.login(t);
+                if (valid) {
+                    stage.close();
+                    displayCustomerScreen(t);
+                } else {
+                    displayAlertScreen("Invalid Credentials!");
+                }           
+                //add more later
             }
             });
 
