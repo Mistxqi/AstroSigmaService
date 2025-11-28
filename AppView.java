@@ -32,7 +32,7 @@ public class AppView {
         this.primaryStage = primaryStage;
 
         createAndConfigurePane();
-        createAndLayoutControls();
+        createInitialLoginScreen();
         updateControllerFromListeners();
         observeModelAndUpdateControls();
     }
@@ -46,7 +46,7 @@ public class AppView {
         view.setAlignment(Pos.CENTER);
     }
 
-    private void createAndLayoutControls() {
+    private void createInitialLoginScreen() {
         this.loginButton = new Button("Login");
         this.loginButton.setOnAction(event ->addLoginForm());
 
@@ -67,6 +67,22 @@ public class AppView {
 
     }
 
+    private void displayAlertScreen(String error) {
+        Stage alert = new Stage();
+        alert.initOwner(primaryStage);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        VBox alertBox = new VBox(10, new Label(error));
+        alertBox.setAlignment(Pos.CENTER);
+        Scene scene = new Scene(alertBox, 200, 50);
+        alert.setScene(scene);
+        alert.show();
+    }
+
+    private void displayCustomerScreen(User user) {
+        view.getChildren().clear();
+        Label welcomeLabel = new Label("Welcome, " + user.getUserName() + "!");
+    }
+
     private void addRegisterForm() {
         Stage stage = new Stage();
         stage.initOwner(primaryStage);
@@ -84,23 +100,20 @@ public class AppView {
 
         Button submitBtn = new Button("Submit");
         submitBtn.setOnAction(event -> {
-            
-            User t = new User(userNameField.getText(),passwordField.getText());
-            boolean valid = this.controller.register(t);
-            if (valid){
-                stage.close();
-            } else {
-                Stage alert = new Stage();
-                alert.initOwner(primaryStage);
-                alert.initModality(Modality.APPLICATION_MODAL);
-                VBox alertBox = new VBox(10, new Label("Username already exists!"));
-                alertBox.setAlignment(Pos.CENTER);
-                Scene scene = new Scene(alertBox, 200, 50);
-                alert.setScene(scene);
-                alert.show();
-            }
-            //add more later
-        });
+            if (userNameField.getText() == "" || passwordField.getText() == "") {
+                displayAlertScreen("Empty Fields!");
+            } else if (passwordField.getText().length() < 7){
+                displayAlertScreen("Password Minimum 8 letters!");
+            }else {
+                User t = new User(userNameField.getText(),passwordField.getText(), UserType.CUSTOMER);
+                boolean valid = this.controller.register(t);
+                if (valid){
+                    stage.close();
+                } else {
+                    displayAlertScreen("Username already exists!");
+                }
+                //add more later
+        }});
 
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setOnAction(event -> stage.close());
@@ -131,12 +144,17 @@ public class AppView {
         TextField passwordField = new TextField();
         passwordField.setPromptText("Enter in Password");
         HBox passwordRow = new HBox(5, new Label("Password:"), passwordField);
+        passwordRow.setAlignment(Pos.CENTER);
 
         Button submitBtn = new Button("Submit");
         submitBtn.setOnAction(event -> {
-            String username = userNameField.getText().trim();
-            String password = passwordField.getText().trim();
-            stage.close();
+            User t = new User(userNameField.getText(),passwordField.getText(), UserType.CUSTOMER);
+            if (this.controller.login(t)) {
+                stage.close();
+                displayCustomerScreen(t);
+            } else {
+                displayAlertScreen("Invalid Credentials!");
+            }
             //add more later
         });
 
@@ -144,6 +162,7 @@ public class AppView {
         cancelBtn.setOnAction(event -> stage.close());
 
         HBox BtnRow = new HBox(submitBtn, cancelBtn);
+        BtnRow.setAlignment(Pos.CENTER);
         
 
         VBox root = new VBox(10, userNameRow, passwordRow, BtnRow);

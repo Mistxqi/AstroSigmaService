@@ -8,4 +8,8 @@ public class AppController {
     public boolean register(User user) {
         return this.model.register(user);
     }
+
+    public boolean login(User user) {
+        return this.model.login(user);
+    }
 }
