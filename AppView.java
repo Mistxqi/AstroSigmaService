@@ -100,7 +100,7 @@ public class AppView {
 
         Button submitBtn = new Button("Submit");
         submitBtn.setOnAction(event -> {
-            if (userNameField.getText() == "" || passwordField.getText() == "") {
+            if (userNameField.getText().trim().isEmpty() || passwordField.getText().trim().isEmpty()) {
                 displayAlertScreen("Empty Fields!");
             } else if (passwordField.getText().length() < 7){
                 displayAlertScreen("Password Minimum 8 letters!");
