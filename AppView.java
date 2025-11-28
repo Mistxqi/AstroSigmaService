@@ -104,6 +104,8 @@ public class AppView {
                 displayAlertScreen("Empty Fields!");
             } else if (passwordField.getText().length() < 7){
                 displayAlertScreen("Password Minimum 8 letters!");
+            }else if (userNameField.getText().trim().contains(" ")){
+                displayAlertScreen("Username Can't Have Spaces!");
             }else {
                 User t = new User(userNameField.getText(),passwordField.getText(), UserType.CUSTOMER);
                 boolean valid = this.controller.register(t);
@@ -112,7 +114,6 @@ public class AppView {
                 } else {
                     displayAlertScreen("Username already exists!");
                 }
-                //add more later
         }});
 
         Button cancelBtn = new Button("Cancel");
