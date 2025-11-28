@@ -149,12 +149,12 @@ public class AppView {
 
         Button submitBtn = new Button("Submit");
         submitBtn.setOnAction(event -> {
-            if (userNameField.getText() == "" || passwordField.getText() == "") {
+            if (userNameField.getText().trim().isEmpty() || passwordField.getText().trim().isEmpty()) {
                 displayAlertScreen("Empty Fields!");
             } else if (passwordField.getText().length() < 7){
                 displayAlertScreen("Password Minimum 8 letters!");
             }else {
-                User t = new User(userNameField.getText(),passwordField.getText(), UserType.CUSTOMER);
+                User t = new User(userNameField.getText().trim(),passwordField.getText().trim(), UserType.CUSTOMER);
                 boolean valid = this.controller.login(t);
                 if (valid) {
                     stage.close();
