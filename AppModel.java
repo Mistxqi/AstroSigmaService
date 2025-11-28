@@ -32,6 +32,7 @@ public class AppModel {
     public boolean login(User user) {
         for (User m : loginList){
             if (user.getUserName().equalsIgnoreCase(m.getUserName()) && user.getPassword().equals(m.getUserName())||user.getUserType().equals(m.getUserType())) {
+                if()
                 return true;
             }
         } 

@@ -148,15 +148,23 @@ public class AppView {
 
         Button submitBtn = new Button("Submit");
         submitBtn.setOnAction(event -> {
+            if (userNameField.getText() == "" || passwordField.getText() == "") {
+                displayAlertScreen("Empty Fields!");
+            } else if (passwordField.getText().length() < 7){
+                displayAlertScreen("Password Minimum 8 letters!");
+            }else {
+
             User t = new User(userNameField.getText(),passwordField.getText(), UserType.CUSTOMER);
-            if (this.controller.login(t)) {
+            boolean valid = this.controller.login(t);
+            if (valid) {
                 stage.close();
                 displayCustomerScreen(t);
             } else {
                 displayAlertScreen("Invalid Credentials!");
             }
             //add more later
-        });
+            }
+            });
 
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setOnAction(event -> stage.close());
