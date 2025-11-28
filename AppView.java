@@ -162,7 +162,6 @@ public class AppView {
                 } else {
                     displayAlertScreen("Invalid Credentials!");
                 }           
-                //add more later
             }
             });
 
