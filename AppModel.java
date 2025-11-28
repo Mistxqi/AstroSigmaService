@@ -76,13 +76,15 @@ class User {
 }
 
 enum UserType {
-    CUSTOMER,ADMIN;
+    CUSTOMER,ADMIN,DISABLED;
 
     public String toString() {
         if (this.equals(ADMIN)) {
             return "Administrator";
-        } else {
+        } else if (this.equals(CUSTOMER)) {
             return "Customer";
+        } else {
+            return "Disabled";
         }
     }
 }

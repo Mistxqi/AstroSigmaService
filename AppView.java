@@ -133,7 +133,6 @@ public class AppView {
 
     private void addLoginForm() {
         Stage stage = new Stage();
-        Label statusLabel;
         stage.initOwner(primaryStage);
         stage.initModality(Modality.APPLICATION_MODAL);
 
