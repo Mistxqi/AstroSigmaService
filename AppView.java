@@ -81,15 +81,18 @@ public class AppView {
         Button accounButton = new Button("Account");
         accounButton.setAlignment(Pos.CENTER);
         
-        VBox menuBox = new VBox(5, homeButton,cartButton,languageButton,accounButton);
+        VBox menuBox = new VBox(30, homeButton,cartButton,languageButton,accounButton);
+        menuBox.setAlignment(Pos.CENTER);
         menuBox.setPrefSize(120,300);
         return menuBox;
     }
-
+    
     private VBox displayHomeScreen(User user) {
         Label welcomeLabel = new Label("Welcome, " + user.getUserName() + "!");
         welcomeLabel.setAlignment(Pos.CENTER);
-        return new VBox(welcomeLabel);
+        TextField searchField = new TextField();
+        searchField.setPromptText("Enter Food Item");
+        return new VBox(welcomeLabel, searchField);
     }
 
     private void displayAlertScreen(String error) {
