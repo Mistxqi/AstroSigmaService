@@ -12,14 +12,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.control.TableColumn; 
+
 
 
 public class AppView {
     private VBox view;
     private Button loginButton;
     private Button registerButton;
-    private Label placeholderLabel;
+
+    private Button homeButton;
+    private Button cartButton;
+    private Button LanguageButton;
+    private Button accountButton;
 
     private AppModel model;
     private AppController controller;
@@ -67,6 +71,27 @@ public class AppView {
 
     }
 
+    private VBox displayCustomerSidePanel() {
+        Button homeButton = new Button("Home");
+        homeButton.setAlignment(Pos.CENTER);
+        Button cartButton = new Button("Cart");
+        cartButton.setAlignment(Pos.CENTER);
+        Button languageButton = new Button("Language");
+        languageButton.setAlignment(Pos.CENTER);
+        Button accounButton = new Button("Account");
+        accounButton.setAlignment(Pos.CENTER);
+        
+        VBox menuBox = new VBox(5, homeButton,cartButton,languageButton,accounButton);
+        menuBox.setPrefSize(120,300);
+        return menuBox;
+    }
+
+    private VBox displayHomeScreen(User user) {
+        Label welcomeLabel = new Label("Welcome, " + user.getUserName() + "!");
+        welcomeLabel.setAlignment(Pos.CENTER);
+        return new VBox(welcomeLabel);
+    }
+
     private void displayAlertScreen(String error) {
         Stage alert = new Stage();
         alert.initOwner(primaryStage);
@@ -80,7 +105,13 @@ public class AppView {
 
     private void displayCustomerScreen(User user) {
         view.getChildren().clear();
-        Label welcomeLabel = new Label("Welcome, " + user.getUserName() + "!");
+
+        VBox menuBox = displayCustomerSidePanel();
+        VBox homeBox = displayHomeScreen(user);
+
+        HBox customerScreen = new HBox(5, menuBox, homeBox);
+        
+        view.getChildren().addAll(customerScreen);
     }
 
     private void addRegisterForm() {
@@ -107,7 +138,7 @@ public class AppView {
             }else if (userNameField.getText().trim().contains(" ")){
                 displayAlertScreen("Username Can't Have Spaces!");
             }else {
-                User t = new User(userNameField.getText(),passwordField.getText(), UserType.CUSTOMER);
+                User t = new User(userNameField.getText(),passwordField.getText(), UserType.CUSTOMER, 1000);
                 boolean valid = this.controller.register(t);
                 if (valid){
                     stage.close();
@@ -150,14 +181,14 @@ public class AppView {
         submitBtn.setOnAction(event -> {
             if (userNameField.getText().trim().isEmpty() || passwordField.getText().trim().isEmpty()) {
                 displayAlertScreen("Empty Fields!");
-            } else if (passwordField.getText().length() < 7){
+            } else if (passwordField.getText().length() < 8){
                 displayAlertScreen("Password Minimum 8 letters!");
             }else {
-                User t = new User(userNameField.getText().trim(),passwordField.getText().trim(), UserType.CUSTOMER);
-                boolean valid = this.controller.login(t);
-                if (valid) {
+                User t = new User(userNameField.getText().trim(),passwordField.getText().trim(), UserType.CUSTOMER, 1000);
+                User valid = this.controller.login(t);
+                if (valid != null) {
                     stage.close();
-                    displayCustomerScreen(t);
+                    displayCustomerScreen(valid);
                 } else {
                     displayAlertScreen("Invalid Credentials!");
                 }           

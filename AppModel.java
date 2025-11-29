@@ -1,6 +1,7 @@
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleFloatProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.MapChangeListener;
@@ -29,17 +30,30 @@ public class AppModel {
         return true;
     }
 
-    public boolean login(User user) {
+    public User login(User user) {
         for (User m : loginList){
             if (user.getUserName().equalsIgnoreCase(m.getUserName()) && user.getPassword().equals(m.getPassword())) {
-                return true;
+                return m;
             }
         } 
-        return false;
+        return null;
+    }
+
+    public User getUser(User user) {
+        for (User m : loginList){
+            if (user.getUserName().equalsIgnoreCase(m.getUserName()) && user.getPassword().equals(m.getPassword())) {
+                return m;
+            }
+        } 
+        return null;
     }
 
     public void removeUser(User user) {
         this.loginList.remove(user);
+    }
+
+    public boolean chargeUser(User user, float amount) {
+        return user.chargeBalance(amount);
     }
 }
 
@@ -47,11 +61,13 @@ class User {
     private final SimpleStringProperty userName;
     private final SimpleStringProperty password;
     private UserType userType;
+    private SimpleFloatProperty balance;
 
-    public User(String userName,String password, UserType userType) {
+    public User(String userName,String password, UserType userType, float balance) {
         this.userName = new SimpleStringProperty(userName);
         this.password = new SimpleStringProperty(password);
         this.userType = userType;
+        this.balance = new SimpleFloatProperty(balance);
     }
 
     public String getUserName() {
@@ -72,6 +88,20 @@ class User {
 
     public UserType getUserType() {
         return this.userType;
+    }
+
+    public float getBalance() {
+        return balance.get();
+    }
+
+    public boolean chargeBalance(float amount) {
+
+        if (this.balance.get() >= amount) {
+            balance.set(this.balance.get()-amount);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

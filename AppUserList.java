@@ -10,8 +10,8 @@ public class AppUserList {
     private static ObservableList<User> loginList = FXCollections.observableArrayList();
 
     static {
-        loginList.add(new User("Admin", "12345678", UserType.ADMIN));
-        loginList.add(new User("User", "12345678", UserType.CUSTOMER));
+        loginList.add(new User("Admin", "12345678", UserType.ADMIN, 10000));
+        loginList.add(new User("User", "12345678", UserType.CUSTOMER, 10000));
     }
 
     public static ObservableList<User> getLoginList() {

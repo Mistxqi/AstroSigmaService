@@ -9,7 +9,11 @@ public class AppController {
         return this.model.register(user);
     }
 
-    public boolean login(User user) {
+    public User login(User user) {
         return this.model.login(user);
+    }
+
+    public boolean chargeBalance(User user, float amount) {
+        return this.model.chargeUser(user, amount);
     }
 }
