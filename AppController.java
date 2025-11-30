@@ -16,4 +16,9 @@ public class AppController {
     public boolean chargeBalance(User user, float amount) {
         return this.model.chargeUser(user, amount);
     }
+
+    public void setExpDate(int[] expDate) {
+        return null;
+        //me do this later :3 
+    }
 }

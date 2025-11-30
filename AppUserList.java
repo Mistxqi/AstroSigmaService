@@ -18,3 +18,8 @@ public class AppUserList {
         return loginList;
     }
 }
+
+// public class AppProductList {
+
+//     private static ObservableList<Product> productList = 
+// }

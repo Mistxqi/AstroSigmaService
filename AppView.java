@@ -131,8 +131,8 @@ public class AppView {
         Label title = new Label("Language");
         title.setAlignment(Pos.CENTER);
 
-        RadioButton english = new RadioButton("English");
-        RadioButton indonesian = new RadioButton("Indonesian");
+        RadioButton english = new RadioButton("English(US)");
+        RadioButton indonesian = new RadioButton("English(SG)");
 
         ToggleGroup group = new ToggleGroup();
         english.setToggleGroup(group);
@@ -157,7 +157,7 @@ public class AppView {
         return box;
     }
 
-
+ 
 
     private void displayAlertScreen(String error) {
         Stage alert = new Stage();
@@ -170,7 +170,7 @@ public class AppView {
         alert.show();
     }
 
-        private void setContent(VBox newContent) {
+    private void setContent(VBox newContent) {
         contentBox.getChildren().setAll(newContent.getChildren());
     }
 
@@ -191,32 +191,32 @@ public class AppView {
         view.getChildren().add(customerScreen);
     }
 
+    private VBox displayAdminPanel() {
+        Button homeButton = new Button("Home");
+        homeButton.setAlignment(Pos.CENTER);
+
+        Button stockButton = new Button("Cart");
+        stockButton.setAlignment(Pos.CENTER);
+
+        Button disableButton = new Button("Language");
+        disableButton.setAlignment(Pos.CENTER);
+
+        Button accountButton = new Button("Account");
+        accountButton.setAlignment(Pos.CENTER);
+
+        VBox menuBox = new VBox(30, homeButton, stockButton, disableButton, accountButton);
+        menuBox.setAlignment(Pos.CENTER);
+        menuBox.setPrefSize(120, 300);
+        return menuBox;
+    }
+
     private void displayAdminScreen(User user) {
         view.getChildren().clear();
+        VBox menuBox = displayAdminPanel();
 
-        this.currentUser = user;
+        VBox contentBox = new VBox(); 
+        
 
-        Label title = new Label("Admin Dashboard");
-        title.setAlignment(Pos.CENTER);
-
-        Label info = new Label("Welcome, " + user.getUserName() + " (Administrator)");
-        info.setAlignment(Pos.CENTER);
-
-        Button manageUsersButton = new Button("View Users");
-        Button manageProductsButton = new Button("View Products");
-
-        manageUsersButton.setOnAction(e -> {
-            displayAlertScreen("User management coming soon.");
-        });
-
-        manageProductsButton.setOnAction(e -> {
-            displayAlertScreen("Product management coming soon.");
-        });
-
-        VBox adminBox = new VBox(10, title, info, manageUsersButton, manageProductsButton);
-        adminBox.setAlignment(Pos.CENTER);
-
-        view.getChildren().add(adminBox);
     }
 
 

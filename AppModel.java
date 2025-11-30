@@ -2,6 +2,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.MapChangeListener;
@@ -104,6 +105,94 @@ class User {
         }
     }
 }
+
+class Product {
+    private SimpleStringProperty name;
+    private SimpleFloatProperty price;
+    private SimpleIntegerProperty stock;
+    private ItemCategory category;
+
+    public Product(String name, int stock, float price, ItemCategory category) {
+        this.name = new SimpleStringProperty(name);
+        this.price = new SimpleFloatProperty(price);
+        this.stock = new SimpleIntegerProperty(stock);
+        this.category = category;
+    }
+
+    public SimpleStringProperty getName() {
+        return name;
+    }
+
+    public void setName(SimpleStringProperty name) {
+        this.name = name;
+    }
+
+    public SimpleFloatProperty getPrice() {
+        return price;
+    }
+
+    public void setPrice(SimpleFloatProperty price) {
+        this.price = price;
+    }
+
+    public SimpleIntegerProperty getStock() {
+        return stock;
+    }
+
+    public void setStock(SimpleIntegerProperty stock) {
+        this.stock = stock;
+    }
+
+    public ItemCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(ItemCategory category) {
+        this.category = category;
+    }
+}
+
+class Perishable extends Product {
+    private SimpleIntegerProperty[] ExpDate;
+    private SimpleIntegerProperty bad;
+
+    public Perishable(String name, int stock, float price, int[] ExpDate, int bad, ItemCategory category) {
+        super(name, stock, price, category);
+        this.ExpDate = new SimpleIntegerProperty[ExpDate.length];
+        this.bad = new SimpleIntegerProperty(bad);
+    }
+
+    public SimpleIntegerProperty[] getExpDate() {
+        return ExpDate;
+    }
+
+    public void setExpDate(SimpleIntegerProperty[] ExpDate) {
+        this.ExpDate = ExpDate;
+    }
+
+    public SimpleIntegerProperty getBad() {
+        return bad;
+    }
+
+    public void setBad(SimpleIntegerProperty bad) {
+        this.bad = bad;
+    }
+
+    
+}
+
+enum ItemCategory{
+    RECOMMENDATIONS,
+    FRUITS_N_VEGETABLES,
+    ASTROBASIC,
+    ASTROGOODS,
+    MEATS,
+    DAIRY,
+    SEAFOOD,
+    SNACKS,
+    SEASONINGS;
+}
+
 
 enum UserType {
     CUSTOMER,ADMIN,DISABLED;
