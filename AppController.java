@@ -1,3 +1,6 @@
+import java.time.LocalDate;
+import java.time.YearMonth;
+
 public class AppController {
     private final AppModel model;
 
@@ -18,7 +21,15 @@ public class AppController {
     }
 
     public void setExpDate(int[] expDate) {
-        return null;
+        this.model.setExpDate(expDate);
         //me do this later :3 
+    }
+
+    public boolean isExp(Perishable product) {
+        int[] expDate = product.getExpDate();
+        LocalDate expiryDate = LocalDate.of(expDate[2], expDate[1], expDate[0]);
+        LocalDate currentDate = LocalDate.now();
+        return currentDate.isAfter(expiryDate);
+        
     }
 }

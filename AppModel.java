@@ -9,10 +9,11 @@ import javafx.collections.MapChangeListener;
 
 public class AppModel {
     private final ObservableList<User> loginList;
-
+    private final ObservableList<Product> productList;
 
     AppModel() {
         this.loginList = AppUserList.getLoginList();
+        this.productList = AppProductList.getProductList();
     }
 
     public ObservableList<User> loginProperty(){
@@ -153,21 +154,21 @@ class Product {
 }
 
 class Perishable extends Product {
-    private SimpleIntegerProperty[] ExpDate;
+    private int[] expDate;
     private SimpleIntegerProperty bad;
 
-    public Perishable(String name, int stock, float price, int[] ExpDate, int bad, ItemCategory category) {
+    public Perishable(String name, int stock, float price, ItemCategory itemCategory, int[] expDate, int bad) {
         super(name, stock, price, category);
-        this.ExpDate = new SimpleIntegerProperty[ExpDate.length];
-        this.bad = new SimpleIntegerProperty(bad);
+        this.expDate = expDate;
+        this.bad = new SimpleIntegerProperty(bananasExp);
     }
 
-    public SimpleIntegerProperty[] getExpDate() {
-        return ExpDate;
+    public int[] getExpDate() {
+        return expDate;
     }
 
-    public void setExpDate(SimpleIntegerProperty[] ExpDate) {
-        this.ExpDate = ExpDate;
+    public void setExpDate(int[] expDate) {
+        this.expDate = expDate;
     }
 
     public SimpleIntegerProperty getBad() {
@@ -180,6 +181,7 @@ class Perishable extends Product {
 
     
 }
+
 
 enum ItemCategory{
     RECOMMENDATIONS,

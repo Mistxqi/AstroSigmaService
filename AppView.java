@@ -3,6 +3,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -112,7 +113,13 @@ public class AppView {
         welcomeLabel.setAlignment(Pos.CENTER);
         TextField searchField = new TextField();
         searchField.setPromptText("Enter Food Item");
+
+        ListView<Product> productList = new ListView<>();
+        
+
         return new VBox(welcomeLabel, searchField);
+
+
     }
 
     private VBox displayCartScreen(User user) {
@@ -168,10 +175,6 @@ public class AppView {
         Scene scene = new Scene(alertBox, 200, 50);
         alert.setScene(scene);
         alert.show();
-    }
-
-    private void setContent(VBox newContent) {
-        contentBox.getChildren().setAll(newContent.getChildren());
     }
 
 
@@ -290,11 +293,7 @@ public class AppView {
             } else if (passwordField.getText().length() < 8){
                 displayAlertScreen("Password Minimum 8 letters!");
             }else {
-                User t = new User(
-                userNameField.getText().trim(),
-                passwordField.getText().trim(),
-                UserType.CUSTOMER,
-                1000);
+                User t = new User(userNameField.getText().trim(),passwordField.getText().trim(),UserType.CUSTOMER,1000);
 
             User valid = this.controller.login(t);
 
