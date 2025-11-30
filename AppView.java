@@ -28,6 +28,9 @@ public class AppView {
     private AppModel model;
     private AppController controller;
     private Stage primaryStage;
+    private VBox contentBox;      // right-side panel that changes (Home / Cart / etc.)
+    private User currentUser;     // the logged-in customer
+
 
     public AppView(AppController controller, AppModel model, Stage primaryStage) {
 
@@ -72,20 +75,30 @@ public class AppView {
     }
 
     private VBox displayCustomerSidePanel() {
-        Button homeButton = new Button("Home");
+        homeButton = new Button("Home");
         homeButton.setAlignment(Pos.CENTER);
-        Button cartButton = new Button("Cart");
+
+        cartButton = new Button("Cart");
         cartButton.setAlignment(Pos.CENTER);
-        Button languageButton = new Button("Language");
-        languageButton.setAlignment(Pos.CENTER);
-        Button accounButton = new Button("Account");
-        accounButton.setAlignment(Pos.CENTER);
-        
-        VBox menuBox = new VBox(30, homeButton,cartButton,languageButton,accounButton);
+
+        LanguageButton = new Button("Language");
+        LanguageButton.setAlignment(Pos.CENTER);
+
+        accountButton = new Button("Account");
+        accountButton.setAlignment(Pos.CENTER);
+
+        homeButton.setOnAction(e -> setContent(displayHomeScreen(currentUser)));
+        cartButton.setOnAction(e -> setContent(displayCartScreen(currentUser)));
+        LanguageButton.setOnAction(e -> setContent(displayLanguageScreen()));
+        accountButton.setOnAction(e -> setContent(displayAccountScreen(currentUser)));
+
+        VBox menuBox = new VBox(30, homeButton, cartButton, LanguageButton, accountButton);
         menuBox.setAlignment(Pos.CENTER);
-        menuBox.setPrefSize(120,300);
+        menuBox.setPrefSize(120, 300);
+
         return menuBox;
     }
+
     
     private VBox displayHomeScreen(User user) {
         Label welcomeLabel = new Label("Welcome, " + user.getUserName() + "!");
@@ -94,6 +107,49 @@ public class AppView {
         searchField.setPromptText("Enter Food Item");
         return new VBox(welcomeLabel, searchField);
     }
+
+        private VBox displayCartScreen(User user) {
+        Label title = new Label("Cart");
+        title.setAlignment(Pos.CENTER);
+
+        Label info = new Label("Your cart items will appear here.");
+        info.setAlignment(Pos.CENTER);
+
+        VBox box = new VBox(10, title, info);
+        box.setAlignment(Pos.CENTER);
+        return box;
+    }
+
+    private VBox displayLanguageScreen() {
+        Label title = new Label("Language");
+        title.setAlignment(Pos.CENTER);
+
+        RadioButton english = new RadioButton("English");
+        RadioButton indonesian = new RadioButton("Indonesian");
+
+        ToggleGroup group = new ToggleGroup();
+        english.setToggleGroup(group);
+        indonesian.setToggleGroup(group);
+        english.setSelected(true);
+
+        VBox box = new VBox(10, title, english, indonesian);
+        box.setAlignment(Pos.CENTER);
+        return box;
+    }
+
+    private VBox displayAccountScreen(User user) {
+        Label title = new Label("Account");
+        title.setAlignment(Pos.CENTER);
+
+        Label username = new Label("Username: " + user.getUserName());
+        username.setAlignment(Pos.CENTER);
+
+        // later you can add balance, edit profile, etc.
+        VBox box = new VBox(10, title, username);
+        box.setAlignment(Pos.CENTER);
+        return box;
+    }
+
 
     private void displayAlertScreen(String error) {
         Stage alert = new Stage();
@@ -106,16 +162,25 @@ public class AppView {
         alert.show();
     }
 
+        private void setContent(VBox newContent) {
+        contentBox.getChildren().setAll(newContent.getChildren());
+    }
+
+
     private void displayCustomerScreen(User user) {
         view.getChildren().clear();
 
-        VBox menuBox = displayCustomerSidePanel();
-        VBox homeBox = displayHomeScreen(user);
+        this.currentUser = user;
 
-        HBox customerScreen = new HBox(5, menuBox, homeBox);
-        
-        view.getChildren().addAll(customerScreen);
+        VBox menuBox = displayCustomerSidePanel();
+
+        contentBox = displayHomeScreen(user);
+
+        HBox customerScreen = new HBox(5, menuBox, contentBox);
+
+        view.getChildren().add(customerScreen);
     }
+
 
     private void addRegisterForm() {
         Stage stage = new Stage();
