@@ -57,6 +57,23 @@ public class AppModel {
     public boolean chargeUser(User user, float amount) {
         return user.chargeBalance(amount);
     }
+
+    public ObservableList<Product> searchProduct(String product) {
+        ObservableList<Product> results = FXCollections.observableArrayList();
+
+        for (Product m : productList){
+            String mname = m.getName().get().toLowerCase();
+            if (mname.contains(product.toLowerCase())){
+                results.add(m);
+            }
+        }
+
+        return results;
+    }
+
+    public ObservableList<Product> ProductList() {
+        return productList;
+    }
 }
 
 class User {

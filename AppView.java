@@ -1,3 +1,6 @@
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,10 +16,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.beans.property.SimpleStringProperty;
 
 
 
 public class AppView {
+    private TableView<Product> productTable;
     private VBox view;
     private Button loginButton;
     private Button registerButton;
@@ -26,6 +33,7 @@ public class AppView {
     private Button LanguageButton;
     private Button accountButton;
 
+    private TextField searchField;
     private AppModel model;
     private AppController controller;
     private Stage primaryStage;
@@ -68,7 +76,17 @@ public class AppView {
     }
 
     private void updateControllerFromListeners() {
+    }
 
+    private void updateIfNeeded(String search){
+         if (search == null || search.trim().isEmpty()) {
+        // Show all products when search is empty
+        productTable.setItems(model.getProductList());
+    } else {
+        // Filter products based on search term
+        ObservableList<Product> filteredProducts = controller.searchProduct(search);
+        productTable.setItems(filteredProducts);
+    }
     }
 
     private void observeModelAndUpdateControls() {
@@ -111,13 +129,26 @@ public class AppView {
     private VBox displayHomeScreen(User user) {
         Label welcomeLabel = new Label("Welcome, " + user.getUserName() + "!");
         welcomeLabel.setAlignment(Pos.CENTER);
-        TextField searchField = new TextField();
+        searchField = new TextField();
         searchField.setPromptText("Enter Food Item");
 
-        ListView<Product> productList = new ListView<>();
-        
+        productTable = new TableView<>();
+        TableColumn<Product, String> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(cellData -> cellData.getValue().getName());
 
-        return new VBox(welcomeLabel, searchField);
+        TableColumn<Product, String> priceCol = new TableColumn<>("Price");
+        priceCol.setCellValueFactory(cellData -> cellData.getValue().getPrice());
+
+        TableColumn<Product, String> categoryCol = new TableColumn<>("Column");
+         categoryCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory().toString()));
+
+        productTable.setPrefHeight(300);
+        productTable.getColumns().addAll(nameCol, priceCol);
+        productTable.setItems(FXCollections.observableArrayList());
+        
+        updateControllerFromListeners();
+
+        return new VBox(10, welcomeLabel, searchField, productTable);
 
 
     }

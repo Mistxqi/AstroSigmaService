@@ -1,11 +1,20 @@
 import java.time.LocalDate;
 import java.time.YearMonth;
+import javafx.collections.ObservableList;
 
 public class AppController {
     private final AppModel model;
 
     public AppController(AppModel model) {
         this.model = model;
+    }
+    
+    public ObservableList<Product> getProductList() {
+        return this.model.getProductList();
+    }
+
+    public ObservableList<Product> searchProduct(String product) {
+        return this.model.searchProduct(product);
     }
 
     public boolean register(User user) {
