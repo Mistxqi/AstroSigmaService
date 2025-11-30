@@ -191,6 +191,33 @@ public class AppView {
         view.getChildren().add(customerScreen);
     }
 
+    private void displayAdminScreen(User user) {
+        view.getChildren().clear();
+
+        this.currentUser = user;
+
+        Label title = new Label("Admin Dashboard");
+        title.setAlignment(Pos.CENTER);
+
+        Label info = new Label("Welcome, " + user.getUserName() + " (Administrator)");
+        info.setAlignment(Pos.CENTER);
+
+        Button manageUsersButton = new Button("View Users");
+        Button manageProductsButton = new Button("View Products");
+
+        manageUsersButton.setOnAction(e -> {
+            displayAlertScreen("User management coming soon.");
+        });
+
+        manageProductsButton.setOnAction(e -> {
+            displayAlertScreen("Product management coming soon.");
+        });
+
+        VBox adminBox = new VBox(10, title, info, manageUsersButton, manageProductsButton);
+        adminBox.setAlignment(Pos.CENTER);
+
+        view.getChildren().add(adminBox);
+    }
 
 
     private void addRegisterForm() {
@@ -263,14 +290,28 @@ public class AppView {
             } else if (passwordField.getText().length() < 8){
                 displayAlertScreen("Password Minimum 8 letters!");
             }else {
-                User t = new User(userNameField.getText().trim(),passwordField.getText().trim(), UserType.CUSTOMER, 1000);
-                User valid = this.controller.login(t);
-                if (valid != null) {
-                    stage.close();
-                    displayCustomerScreen(valid);
-                } else {
-                    displayAlertScreen("Invalid Credentials!");
-                }           
+                User t = new User(
+                userNameField.getText().trim(),
+                passwordField.getText().trim(),
+                UserType.CUSTOMER,
+                1000);
+
+            User valid = this.controller.login(t);
+
+            if (valid != null) {
+             stage.close();
+
+             // If admin, open admin screen. Else, open customer screen.
+                if (valid.getUserType() == UserType.ADMIN) {
+                displayAdminScreen(valid);
+             } else {
+                displayCustomerScreen(valid);
+                }
+
+            } else {
+                displayAlertScreen("Invalid Credentials!");
+                }
+      
             }
             });
 
