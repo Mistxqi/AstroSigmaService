@@ -75,6 +75,7 @@ public class AppView {
     }
 
     private VBox displayCustomerSidePanel() {
+        // use the fields so other methods can see them
         homeButton = new Button("Home");
         homeButton.setAlignment(Pos.CENTER);
 
@@ -87,6 +88,7 @@ public class AppView {
         accountButton = new Button("Account");
         accountButton.setAlignment(Pos.CENTER);
 
+        // when side buttons are clicked, change the right-side content
         homeButton.setOnAction(e -> setContent(displayHomeScreen(currentUser)));
         cartButton.setOnAction(e -> setContent(displayCartScreen(currentUser)));
         LanguageButton.setOnAction(e -> setContent(displayLanguageScreen()));
@@ -95,9 +97,14 @@ public class AppView {
         VBox menuBox = new VBox(30, homeButton, cartButton, LanguageButton, accountButton);
         menuBox.setAlignment(Pos.CENTER);
         menuBox.setPrefSize(120, 300);
-
         return menuBox;
     }
+
+    private void setContent(VBox newContent) {
+        // replace children in the existing contentBox
+        contentBox.getChildren().setAll(newContent.getChildren());
+    }
+
 
     
     private VBox displayHomeScreen(User user) {
@@ -108,7 +115,7 @@ public class AppView {
         return new VBox(welcomeLabel, searchField);
     }
 
-        private VBox displayCartScreen(User user) {
+    private VBox displayCartScreen(User user) {
         Label title = new Label("Cart");
         title.setAlignment(Pos.CENTER);
 
@@ -144,11 +151,12 @@ public class AppView {
         Label username = new Label("Username: " + user.getUserName());
         username.setAlignment(Pos.CENTER);
 
-        // later you can add balance, edit profile, etc.
+        // later you can add: balance, edit account, etc.
         VBox box = new VBox(10, title, username);
         box.setAlignment(Pos.CENTER);
         return box;
     }
+
 
 
     private void displayAlertScreen(String error) {
@@ -170,16 +178,19 @@ public class AppView {
     private void displayCustomerScreen(User user) {
         view.getChildren().clear();
 
+        // remember who is logged in
         this.currentUser = user;
 
         VBox menuBox = displayCustomerSidePanel();
 
+        // default right panel is Home
         contentBox = displayHomeScreen(user);
 
         HBox customerScreen = new HBox(5, menuBox, contentBox);
 
         view.getChildren().add(customerScreen);
     }
+
 
 
     private void addRegisterForm() {
