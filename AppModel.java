@@ -16,10 +16,6 @@ public class AppModel {
         this.productList = AppProductList.getProductList();
     }
 
-    public ObservableList<User> loginProperty(){
-        return null;
-    }
-
     public boolean register(User user) {
 
         for (User m : loginList){
@@ -149,6 +145,10 @@ class Product {
         return price;
     }
 
+    public SimpleStringProperty getPriceLabel() {
+        return new SimpleStringProperty("$" +String.valueOf(this.price.floatValue()));
+    }
+
     public void setPrice(SimpleFloatProperty price) {
         this.price = price;
     }
@@ -175,9 +175,9 @@ class Perishable extends Product {
     private SimpleIntegerProperty bad;
 
     public Perishable(String name, int stock, float price, ItemCategory itemCategory, int[] expDate, int bad) {
-        super(name, stock, price, category);
+        super(name, stock, price, itemCategory);
         this.expDate = expDate;
-        this.bad = new SimpleIntegerProperty(bananasExp);
+        this.bad = new SimpleIntegerProperty(bad);
     }
 
     public int[] getExpDate() {
@@ -210,6 +210,10 @@ enum ItemCategory{
     SEAFOOD,
     SNACKS,
     SEASONINGS;
+
+    public String toString() {
+        return String.valueOf(this);
+    }
 }
 
 

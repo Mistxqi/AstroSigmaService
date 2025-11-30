@@ -76,21 +76,24 @@ public class AppView {
     }
 
     private void updateControllerFromListeners() {
+         if (searchField != null) {
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+        updateIfNeeded(newValue);
+        });
+        }
     }
-
+    
     private void updateIfNeeded(String search){
          if (search == null || search.trim().isEmpty()) {
-        // Show all products when search is empty
-        productTable.setItems(model.getProductList());
+        productTable.setItems(FXCollections.observableArrayList());
     } else {
-        // Filter products based on search term
         ObservableList<Product> filteredProducts = controller.searchProduct(search);
         productTable.setItems(filteredProducts);
     }
     }
 
     private void observeModelAndUpdateControls() {
-
+        
     }
 
     private VBox displayCustomerSidePanel() {
@@ -137,12 +140,12 @@ public class AppView {
         nameCol.setCellValueFactory(cellData -> cellData.getValue().getName());
 
         TableColumn<Product, String> priceCol = new TableColumn<>("Price");
-        priceCol.setCellValueFactory(cellData -> cellData.getValue().getPrice());
+        priceCol.setCellValueFactory(cellData -> cellData.getValue().getPriceLabel());
 
         TableColumn<Product, String> categoryCol = new TableColumn<>("Column");
          categoryCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory().toString()));
 
-        productTable.setPrefHeight(300);
+        productTable.setPrefHeight(200);
         productTable.getColumns().addAll(nameCol, priceCol);
         productTable.setItems(FXCollections.observableArrayList());
         
