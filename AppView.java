@@ -1,3 +1,5 @@
+import java.util.Collections;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -88,6 +90,8 @@ public class AppView {
         productTable.setItems(FXCollections.observableArrayList());
     } else {
         ObservableList<Product> filteredProducts = controller.searchProduct(search);
+        
+        FXCollections.sort(filteredProducts);
         productTable.setItems(filteredProducts);
     }
     }

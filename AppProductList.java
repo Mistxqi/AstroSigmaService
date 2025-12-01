@@ -1,4 +1,7 @@
 import javafx.beans.property.SimpleObjectProperty;
+
+import java.util.Comparator;
+
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -41,3 +44,4 @@ public class AppProductList {
         return productList;
     }
 }
+

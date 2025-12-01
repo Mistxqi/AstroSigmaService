@@ -1,6 +1,10 @@
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
+
+import java.util.Comparator;
+
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -73,32 +77,32 @@ public class AppModel {
 }
 
 class User {
-    private final SimpleStringProperty userName;
-    private final SimpleStringProperty password;
+    private String userName;
+    private String password;
     private UserType userType;
-    private SimpleFloatProperty balance;
+    private float balance;
 
     public User(String userName,String password, UserType userType, float balance) {
-        this.userName = new SimpleStringProperty(userName);
-        this.password = new SimpleStringProperty(password);
+        this.userName = userName;
+        this.password = password;
         this.userType = userType;
-        this.balance = new SimpleFloatProperty(balance);
+        this.balance = balance;
     }
 
     public String getUserName() {
-        return userName.get();
+        return userName;
     }
 
     public String getPassword() {
-        return password.get();
+        return password;
     }
 
     public void setUserName(String newUserName) {
-        this.userName.set(newUserName);
+        this.userName = newUserName;
     }
 
     public void setPassword(String newPassword) {
-        this.password.set(newPassword);
+        this.password = newPassword;
     }
 
     public UserType getUserType() {
@@ -106,13 +110,13 @@ class User {
     }
 
     public float getBalance() {
-        return balance.get();
+        return balance;
     }
 
     public boolean chargeBalance(float amount) {
 
-        if (this.balance.get() >= amount) {
-            balance.set(this.balance.get()-amount);
+        if (this.balance >= amount) {
+            balance= this.balance-amount;
             return true;
         } else {
             return false;
@@ -120,29 +124,35 @@ class User {
     }
 }
 
-class Product {
-    private SimpleStringProperty name;
-    private SimpleFloatProperty price;
-    private SimpleIntegerProperty stock;
+class Product implements Comparable<Product>{
+    private String name;
+    private float price;
+    private int stock;
     private ItemCategory category;
 
     public Product(String name, int stock, float price, ItemCategory category) {
-        this.name = new SimpleStringProperty(name);
-        this.price = new SimpleFloatProperty(price);
-        this.stock = new SimpleIntegerProperty(stock);
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
         this.category = category;
     }
 
+    @Override
+    public int compareTo(Product other) {
+        return this.name.compareTo(other.name);
+    }
+
+
     public SimpleStringProperty getName() {
-        return name;
+        return new SimpleStringProperty(this.name);
     }
 
     public void setName(SimpleStringProperty name) {
-        this.name = name;
+        this.name = name.toString();
     }
 
     public SimpleFloatProperty getPrice() {
-        return price;
+        return new SimpleFloatProperty(this.price);
     }
 
     public SimpleStringProperty getPriceLabel() {
@@ -150,15 +160,15 @@ class Product {
     }
 
     public void setPrice(SimpleFloatProperty price) {
-        this.price = price;
+        this.price = price.get();
     }
 
     public SimpleIntegerProperty getStock() {
-        return stock;
+        return new SimpleIntegerProperty(this.stock);
     }
 
     public void setStock(SimpleIntegerProperty stock) {
-        this.stock = stock;
+        this.stock = stock.get();
     }
 
     public ItemCategory getCategory() {
@@ -198,6 +208,8 @@ class Perishable extends Product {
 
     
 }
+
+
 
 
 enum ItemCategory{
