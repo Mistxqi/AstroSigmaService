@@ -63,7 +63,8 @@ public class AppModel {
 
         for (Product m : productList){
             String mname = m.getName().get().toLowerCase();
-            if (mname.contains(product.toLowerCase())){
+            String mcat = m.getCategory().toString().toLowerCase();
+            if (mname.contains(product.toLowerCase())||mcat.contains(product.toLowerCase())){
                 results.add(m);
             }
         }
@@ -71,7 +72,7 @@ public class AppModel {
         return results;
     }
 
-    public ObservableList<Product> ProductList() {
+    public ObservableList<Product> getProductList() {
         return productList;
     }
 }
@@ -156,7 +157,7 @@ class Product implements Comparable<Product>{
     }
 
     public SimpleStringProperty getPriceLabel() {
-        return new SimpleStringProperty("$" +String.valueOf(this.price.floatValue()));
+        return new SimpleStringProperty("$" +String.valueOf(this.price));
     }
 
     public void setPrice(SimpleFloatProperty price) {
@@ -182,12 +183,12 @@ class Product implements Comparable<Product>{
 
 class Perishable extends Product {
     private int[] expDate;
-    private SimpleIntegerProperty bad;
+    private int bad;
 
     public Perishable(String name, int stock, float price, ItemCategory itemCategory, int[] expDate, int bad) {
         super(name, stock, price, itemCategory);
         this.expDate = expDate;
-        this.bad = new SimpleIntegerProperty(bad);
+        this.bad = bad;
     }
 
     public int[] getExpDate() {
@@ -199,11 +200,11 @@ class Perishable extends Product {
     }
 
     public SimpleIntegerProperty getBad() {
-        return bad;
+        return new SimpleIntegerProperty(this.bad);
     }
 
     public void setBad(SimpleIntegerProperty bad) {
-        this.bad = bad;
+        this.bad = bad.get();
     }
 
     
@@ -222,10 +223,6 @@ enum ItemCategory{
     SEAFOOD,
     SNACKS,
     SEASONINGS;
-
-    public String toString() {
-        return String.valueOf(this);
-    }
 }
 
 

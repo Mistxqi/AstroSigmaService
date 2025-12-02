@@ -34,10 +34,10 @@ public class AppProductList {
         productList.add(new Perishable("Ribeye Steak", 10, (float) 10.49, ItemCategory.MEATS, meatExp, 4));
         productList.add(new Perishable("Sirloin Steak", 10, (float) 12.49, ItemCategory.MEATS, meatExp, 2));
 
-        productList.add(new Perishable("Lays", 10, (float) 3.49, ItemCategory.SNACKS, peachExp, 3));
-        productList.add(new Perishable("Ritz Crackers", 10, (float) 4.49, ItemCategory.SNACKS, peachExp, 3));
-        productList.add(new Perishable("Oreos", 10, (float) 12.49, ItemCategory.SNACKS, peachExp, 3));
-        productList.add(new Perishable("Jerky", 10, (float) 9.49, ItemCategory.SNACKS, peachExp, 3));
+        productList.add(new Perishable("Lays", 10, (float)3.49, ItemCategory.SNACKS, peachExp, 3));
+        productList.add(new Perishable("Ritz Crackers", 10, (float)4.49, ItemCategory.SNACKS, peachExp, 3));
+        productList.add(new Perishable("Oreos", 10, (float)12.49, ItemCategory.SNACKS, peachExp, 3));
+        productList.add(new Perishable("Jerky", 10, (float)9.49, ItemCategory.SNACKS, peachExp, 3));
     }
 
     public static ObservableList<Product> getProductList() {

@@ -41,4 +41,8 @@ public class AppController {
         return currentDate.isAfter(expiryDate);
         
     }
+
+    public int compareTo(Product thisa, Product other) {
+        return thisa.compareTo(other);
+    }
 }

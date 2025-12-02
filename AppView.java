@@ -1,4 +1,5 @@
 import java.util.Collections;
+import java.util.Comparator;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -84,10 +85,18 @@ public class AppView {
         });
         }
     }
+
+    class SortByName implements Comparator<Product> {
+        public int compare(Products a, Products b){
+            return a.getName().compareTo(b.getName());
+        }
+    }
     
     private void updateIfNeeded(String search){
          if (search == null || search.trim().isEmpty()) {
-        productTable.setItems(FXCollections.observableArrayList());
+        ObservableList<Product> a = this.controller.getProductList();
+        FXCollections.sort(a);
+        productTable.setItems(FXCollections.observableArrayList(a));
     } else {
         ObservableList<Product> filteredProducts = controller.searchProduct(search);
         
@@ -146,18 +155,21 @@ public class AppView {
         TableColumn<Product, String> priceCol = new TableColumn<>("Price");
         priceCol.setCellValueFactory(cellData -> cellData.getValue().getPriceLabel());
 
-        TableColumn<Product, String> categoryCol = new TableColumn<>("Column");
-         categoryCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory().toString()));
+        TableColumn<Product, String> catCol = new TableColumn<>("Category");
+        catCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory().toString()));
 
-        productTable.setPrefHeight(200);
-        productTable.getColumns().addAll(nameCol, priceCol);
-        productTable.setItems(FXCollections.observableArrayList());
+        productTable.setPrefHeight(100);
+        productTable.setPrefWidth(350);
+
+        productTable.getColumns().addAll(nameCol, priceCol, catCol);
         
+        ObservableList<Product> a = this.controller.getProductList();
+        FXCollections.sort(a);
+        productTable.setItems(FXCollections.observableArrayList(a));
+
         updateControllerFromListeners();
 
         return new VBox(10, welcomeLabel, searchField, productTable);
-
-
     }
 
     private VBox displayCartScreen(User user) {
@@ -208,8 +220,10 @@ public class AppView {
         Stage alert = new Stage();
         alert.initOwner(primaryStage);
         alert.initModality(Modality.APPLICATION_MODAL);
+
         VBox alertBox = new VBox(10, new Label(error));
         alertBox.setAlignment(Pos.CENTER);
+
         Scene scene = new Scene(alertBox, 200, 50);
         alert.setScene(scene);
         alert.show();
