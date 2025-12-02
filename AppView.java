@@ -20,9 +20,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.beans.property.SimpleStringProperty;
-import javax.swing.table.TableColumn;
+import javafx.scene.control.TableRow;
 
 
 
@@ -89,7 +90,7 @@ public class AppView {
 
     class SortByName implements Comparator<Product> {
         public int compare(Product a, Product b){
-            return a.getName().compareTo(b.getName());
+            return a.getName().get().compareTo(b.getName().get());
         }
     }
     
@@ -97,7 +98,7 @@ public class AppView {
          if (search == null || search.trim().isEmpty()) {
         ObservableList<Product> a = this.controller.getProductList();
         FXCollections.sort(a);
-        productTable.setItems(FXCollections.observableArrayList(a));
+        productTable.setItems(a);
     } else {
         ObservableList<Product> filteredProducts = controller.searchProduct(search);
         
@@ -159,62 +160,44 @@ public class AppView {
         TableColumn<Product, String> catCol = new TableColumn<>("Category");
         catCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory().toString()));
 
-        TableColumn<Product, Void> qtyCol = new TableColumn<>("Qty");
-        qtyCol.setCellFactory(col -> new TableCell<Product, Void>() {
+        TableColumn<Product, String> qtyCol = new TableColumn<>("Qty");
+        qtyCol.setCellValueFactory(cellData -> new SimpleStringProperty(this.model.getItemAmt(cellData.getValue()).toString()));
+
+        TableColumn<Product, Void> plusCol = new TableColumn<>("+");
+        plusCol.setCellFactory(Col -> { return new TableCell<Product, Void>(){ 
+            
+            final Button addBtn = new Button("+");
+
+            {
+            addBtn.setOnAction(event -> {
+                Product productAdded = getTableView().getItems().get(getIndex());
+                AppView.this.controller.addCartItem(productAdded);
+                System.out.println(productAdded);
+                getTableView().refresh();
+            });
+            }
+            
         @Override
         protected void updateItem(Void item, boolean empty) {
             super.updateItem(item, empty);
             if (empty) {
-                setText(null);
+                setGraphic(null);
             } else {
-                Product product = getTableView().getItems().get(getIndex());
-                setText(product.getName().get());
+                setGraphic(addBtn);
+                getTableView().refresh();
             }
-        }
-    });
-
-        TableColumn<Product, Void> plusCol = new TableColumn<>("+");
-        plusCol.setCellFactory(col -> new TableCell<Product, Void>() {
-        private final Button btn = new Button("+");
-
-        @Override
-        protected void updateItem(Void item, boolean empty) {
-        super.updateItem(item, empty);
-        if (empty) {
-            setGraphic(null);
-            return;
-        }
-        btn.setOnAction(e -> {
-            Product product = getTableView().getItems().get(getIndex());
-            System.out.println("PLUS clicked: " + product.getName().get());
+            }
+        };
         });
-        setGraphic(btn);
-    }
-});
 
-        TableColumn<Product, Void> minusCol = new TableColumn<>("-");
-        minusCol.setCellFactory(col -> new TableCell<Product, Void>() {
-        private final Button btn = new Button("-");
-
-        @Override
-        protected void updateItem(Void item, boolean empty) {
-        super.updateItem(item, empty);
-        if (empty) {
-            setGraphic(null);
-            return;
-        }
-        btn.setOnAction(e -> {
-            Product product = getTableView().getItems().get(getIndex());
-            System.out.println("MINUS clicked: " + product.getName().get());
-        });
-        setGraphic(btn);
-    }
-});
+        
+        
+        
 
         productTable.setPrefHeight(100);
-        productTable.setPrefWidth(350);
+        productTable.setPrefWidth(500);
 
-        productTable.getColumns().addAll(nameCol, priceCol, catCol, plusCol, qtyCol, minusCol);
+        productTable.getColumns().addAll(nameCol, priceCol, catCol, plusCol, qtyCol);
         
         ObservableList<Product> a = this.controller.getProductList();
         FXCollections.sort(a);

@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.scene.control.TableColumn;
 import javafx.collections.MapChangeListener;
 
 public class AppModel {
@@ -107,11 +108,11 @@ public class AppModel {
         }
     }
 
-    public SimpleStringProperty getItemAmt(Product product) {
+    public SimpleIntegerProperty getItemAmt(Product product) {
         if (itemCart.containsKey(product)){
-            return new SimpleStringProperty(itemCart.get(product) + "");
+            return new SimpleIntegerProperty(itemCart.get(product));
         } 
-            return null;
+            return new SimpleIntegerProperty(0);
     }
 
     
