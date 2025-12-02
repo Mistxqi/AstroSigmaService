@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.beans.property.SimpleStringProperty;
+import javax.swing.table.TableColumn;
 
 
 
@@ -157,6 +158,9 @@ public class AppView {
 
         TableColumn<Product, String> catCol = new TableColumn<>("Category");
         catCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory().toString()));
+
+        TableColumn<Product, Void> qtyCol = new TableColumn<>("Qty");
+        qtyCol.setCellFactory(null);
 
         productTable.setPrefHeight(100);
         productTable.setPrefWidth(350);

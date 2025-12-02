@@ -210,7 +210,9 @@ class Perishable extends Product {
     
 }
 
-
+class Cart {
+    private ObservableMap a;
+}
 
 
 enum ItemCategory{
