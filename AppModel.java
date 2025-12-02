@@ -10,6 +10,7 @@ import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.collections.MapChangeListener;
 
 public class AppModel {
@@ -212,16 +213,35 @@ class Perishable extends Product {
 }
 
 class Cart {
-    private ObservableMap<Product, Integer> itemCart = FXCollections.observableArrayList();
+    private ObservableMap<Product, Integer> itemCart = FXCollections.observableHashMap();
+    
     
     public void addItem(Product product) {
 
-            if (itemCart.containsKey(product)){
-                int a = itemCart.get(product);
-                itemCart.put(product, a+1);
-            }
-
+        if (itemCart.containsKey(product)){
+            int a = itemCart.get(product);
+            itemCart.put(product, a+1);
+        } else {
+            itemCart.put(product, 1);
+        }
     }
+
+    public void removeItem(Product product) {
+        if (itemCart.containsKey(product)){
+            itemCart.remove(product);
+        }
+    }
+
+    public void deduceItem(Product product) {
+        if (itemCart.containsKey(product) && itemCart.get(product)>1){
+            int a = itemCart.get(product);
+            itemCart.put(product, a-1);
+        } else {
+            itemCart.remove(product);
+        }
+    }
+
+    
 }
 
 
