@@ -45,4 +45,17 @@ public class AppController {
     public int compareTo(Product thisa, Product other) {
         return thisa.compareTo(other);
     }
+
+    public void addCartItem(Product product) {
+        this.model.addCartItem(product);
+    }
+
+    public void removeCartItem(Product product) {
+        this.model.removeCartItem(product);
+    }
+
+    public void deduceCartItem(Product product) {
+        this.model.deduceCartItem(product);
+    }
+
 }

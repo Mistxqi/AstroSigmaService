@@ -77,7 +77,46 @@ public class AppModel {
     public ObservableList<Product> getProductList() {
         return productList;
     }
-}
+
+    //cart
+    private ObservableMap<Product, Integer> itemCart = FXCollections.observableHashMap();
+    
+    
+    public void addCartItem(Product product) {
+
+        if (itemCart.containsKey(product)){
+            int a = itemCart.get(product);
+            itemCart.put(product, a+1);
+        } else {
+            itemCart.put(product, 1);
+        }
+    }
+
+    public void removeCartItem(Product product) {
+        if (itemCart.containsKey(product)){
+            itemCart.remove(product);
+        }
+    }
+
+    public void deduceCartItem(Product product) {
+        if (itemCart.containsKey(product) && itemCart.get(product)>1){
+            int a = itemCart.get(product);
+            itemCart.put(product, a-1);
+        } else {
+            itemCart.remove(product);
+        }
+    }
+
+    public SimpleStringProperty getItemAmt(Product product) {
+        if (itemCart.containsKey(product)){
+            return new SimpleStringProperty(itemCart.get(product) + "");
+        } 
+            return null;
+    }
+
+    
+    }
+
 
 class User {
     private String userName;
@@ -212,37 +251,7 @@ class Perishable extends Product {
     
 }
 
-class Cart {
-    private ObservableMap<Product, Integer> itemCart = FXCollections.observableHashMap();
-    
-    
-    public void addItem(Product product) {
 
-        if (itemCart.containsKey(product)){
-            int a = itemCart.get(product);
-            itemCart.put(product, a+1);
-        } else {
-            itemCart.put(product, 1);
-        }
-    }
-
-    public void removeItem(Product product) {
-        if (itemCart.containsKey(product)){
-            itemCart.remove(product);
-        }
-    }
-
-    public void deduceItem(Product product) {
-        if (itemCart.containsKey(product) && itemCart.get(product)>1){
-            int a = itemCart.get(product);
-            itemCart.put(product, a-1);
-        } else {
-            itemCart.remove(product);
-        }
-    }
-
-    
-}
 
 
 enum ItemCategory{
