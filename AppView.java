@@ -159,19 +159,12 @@ public class AppView {
         TableColumn<Product, String> catCol = new TableColumn<>("Category");
         catCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory().toString()));
 
-        TableColumn<Product, String> qtyCol = new TableColumn<>("Qty");
-        qtyCol.setCellFactory(cellData -> new SimpleStringProperty());
 
-        TableColumn<Product, Void> plusCol = new TableColumn<>("+");
-        plusCol.setCellFactory(null);
-
-        TableColumn<Product, Void> minusCol = new TableColumn<>("-");
-        minusCol.setCellFactory(null);
 
         productTable.setPrefHeight(100);
         productTable.setPrefWidth(350);
 
-        productTable.getColumns().addAll(nameCol, priceCol, catCol, plusCol, qtyCol, minusCol);
+        
         
         ObservableList<Product> a = this.controller.getProductList();
         FXCollections.sort(a);
