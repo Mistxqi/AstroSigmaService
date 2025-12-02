@@ -88,7 +88,7 @@ public class AppView {
     }
 
     class SortByName implements Comparator<Product> {
-        public int compare(Products a, Products b){
+        public int compare(Product a, Product b){
             return a.getName().compareTo(b.getName());
         }
     }

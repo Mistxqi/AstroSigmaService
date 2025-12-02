@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.Comparator;
+import java.util.HashMap;
 
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -211,7 +212,16 @@ class Perishable extends Product {
 }
 
 class Cart {
-    private ObservableMap a;
+    private ObservableMap<Product, Integer> itemCart = FXCollections.observableArrayList();
+    
+    public void addItem(Product product) {
+
+            if (itemCart.containsKey(product)){
+                int a = itemCart.get(product);
+                itemCart.put(product, a+1);
+            }
+
+    }
 }
 
 
