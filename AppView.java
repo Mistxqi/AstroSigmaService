@@ -1,8 +1,10 @@
 import java.util.Collections;
 import java.util.Comparator;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -96,19 +98,19 @@ public class AppView {
     
     private void updateIfNeeded(String search){
          if (search == null || search.trim().isEmpty()) {
-        ObservableList<Product> a = this.controller.getProductList();
-        FXCollections.sort(a);
-        productTable.setItems(a);
+        ObservableList<Product> searched = this.controller.getProductList();
+        FXCollections.sort(searched);
+        productTable.setItems(searched);
     } else {
-        ObservableList<Product> filteredProducts = controller.searchProduct(search);
+        ObservableList<Product> searched = controller.searchProduct(search);
         
-        FXCollections.sort(filteredProducts);
-        productTable.setItems(filteredProducts);
+        FXCollections.sort(searched);
+        productTable.setItems(searched);
     }
     }
 
     private void observeModelAndUpdateControls() {
-        
+
     }
 
     private VBox displayCustomerSidePanel() {
@@ -161,43 +163,71 @@ public class AppView {
         catCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory().toString()));
 
         TableColumn<Product, String> qtyCol = new TableColumn<>("Qty");
-        qtyCol.setCellValueFactory(cellData -> new SimpleStringProperty(this.model.getItemAmt(cellData.getValue()).toString()));
+        qtyCol.setCellValueFactory(cellData -> {
+            Product p = cellData.getValue();
+            SimpleIntegerProperty qty = new SimpleIntegerProperty(this.model.getItemAmt(p));
+
+             this.model.itemCart.addListener((MapChangeListener<Product, Integer>) change -> {
+                 qty.set(this.model.getItemAmt(p));
+             });
+            return qty.asString();
+        });
 
         TableColumn<Product, Void> plusCol = new TableColumn<>("+");
         plusCol.setCellFactory(Col -> { return new TableCell<Product, Void>(){ 
             
             final Button addBtn = new Button("+");
-
-            {
-            addBtn.setOnAction(event -> {
-                Product productAdded = getTableView().getItems().get(getIndex());
-                AppView.this.controller.addCartItem(productAdded);
-                System.out.println(productAdded);
-                getTableView().refresh();
-            });
-            }
             
         @Override
         protected void updateItem(Void item, boolean empty) {
             super.updateItem(item, empty);
             if (empty) {
                 setGraphic(null);
+                addBtn.setOnAction(null);
             } else {
                 setGraphic(addBtn);
-                getTableView().refresh();
+                addBtn.setOnAction(event -> {
+                    Product productAdded = getTableView().getItems().get(getIndex());
+                    AppView.this.controller.addCartItem(productAdded);          
+                    System.out.println("Adding to cart: " + productAdded.getName().get());
+                    getTableView().refresh();
+                    getTableView().requestLayout();
+                }); 
             }
             }
         };
         });
 
-        
-        
+        TableColumn<Product, Void> minCol = new TableColumn<>("-");
+        minCol.setCellFactory(Col -> { return new TableCell<Product, Void>(){ 
+            
+            final Button addBtn = new Button("-");
+            
+        @Override
+        protected void updateItem(Void item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+                setGraphic(null);
+                addBtn.setOnAction(null);
+            } else {
+                setGraphic(addBtn);
+                addBtn.setOnAction(event -> {
+                    Product productAdded = getTableView().getItems().get(getIndex());
+                    AppView.this.controller.deduceCartItem(productAdded);          
+                    System.out.println("Reducing Item from Cart: " + productAdded.getName().get());
+                    getTableView().refresh();
+                    getTableView().requestLayout();
+                }); 
+            }
+            }
+        };
+        });
         
 
         productTable.setPrefHeight(100);
         productTable.setPrefWidth(500);
 
-        productTable.getColumns().addAll(nameCol, priceCol, catCol, plusCol, qtyCol);
+        productTable.getColumns().addAll(nameCol, priceCol, catCol, plusCol, qtyCol, minCol);
         
         ObservableList<Product> a = this.controller.getProductList();
         FXCollections.sort(a);
@@ -207,6 +237,8 @@ public class AppView {
 
         return new VBox(10, welcomeLabel, searchField, productTable);
     }
+
+
 
     private VBox displayCartScreen(User user) {
         Label title = new Label("Cart");

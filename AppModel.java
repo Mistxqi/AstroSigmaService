@@ -80,7 +80,7 @@ public class AppModel {
     }
 
     //cart
-    private ObservableMap<Product, Integer> itemCart = FXCollections.observableHashMap();
+    public ObservableMap<Product, Integer> itemCart = FXCollections.observableHashMap();
     
     
     public void addCartItem(Product product) {
@@ -108,13 +108,14 @@ public class AppModel {
         }
     }
 
-    public SimpleIntegerProperty getItemAmt(Product product) {
+    public Integer getItemAmt(Product product) {
         if (itemCart.containsKey(product)){
-            return new SimpleIntegerProperty(itemCart.get(product));
+            return itemCart.get(product);
         } 
-            return new SimpleIntegerProperty(0);
+            return 0;
     }
 
+    
     
     }
 
@@ -221,6 +222,7 @@ class Product implements Comparable<Product>{
     public void setCategory(ItemCategory category) {
         this.category = category;
     }
+    
 }
 
 class Perishable extends Product {
