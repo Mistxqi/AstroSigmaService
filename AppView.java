@@ -129,7 +129,7 @@ public class AppView {
 
         // when side buttons are clicked, change the right-side content
         homeButton.setOnAction(e -> setContent(displayHomeScreen(currentUser)));
-        cartButton.setOnAction(e -> setContent(displayCartScreen(currentUser)));
+        cartButton.setOnAction(e -> displayCartScreen(currentUser));
         LanguageButton.setOnAction(e -> setContent(displayLanguageScreen()));
         accountButton.setOnAction(e -> setContent(displayAccountScreen(currentUser)));
 
@@ -240,16 +240,12 @@ public class AppView {
 
 
 
-    private VBox displayCartScreen(User user) {
-        Label title = new Label("Cart");
-        title.setAlignment(Pos.CENTER);
+    private void displayCartScreen(User user) {
+        Stage stage = new Stage();
+        stage.initOwner(primaryStage);
+        stage.initModality(Modality.APPLICATION_MODAL);
 
-        Label info = new Label("Your cart items will appear here.");
-        info.setAlignment(Pos.CENTER);
-
-        VBox box = new VBox(10, title, info);
-        box.setAlignment(Pos.CENTER);
-        return box;
+        TableView<Product, String> cartTable = new TableView<>();
     }
 
     private VBox displayLanguageScreen() {
