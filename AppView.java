@@ -243,9 +243,21 @@ public class AppView {
     private void displayCartScreen(User user) {
         Stage stage = new Stage();
         stage.initOwner(primaryStage);
-        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initModality(Modality.NONE);
 
         TableView<Product, String> cartTable = new TableView<>();
+        TableColumn<Product, String> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(cellData -> cellData.getValue().getName());
+        TableColumn<Product, String> priceCol = new TableColumn<>("Price");
+        priceCol.setCellValueFactory(cellData -> cellData.getValue().getPriceLabel());
+
+        cartTable.getColumns().addAll(nameCol, priceCol);
+
+        Vbox cartBox = new VBox(5, cartTable);
+        
+        Scene scene = new Scene(cartBox, 200, 800);
+        stage.setScene(scene);
+        stage.show();
     }
 
     private VBox displayLanguageScreen() {
