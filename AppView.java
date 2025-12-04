@@ -1,11 +1,13 @@
 import java.util.Collections;
 import java.util.Comparator;
 
+import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -244,18 +246,52 @@ public class AppView {
         Stage stage = new Stage();
         stage.initOwner(primaryStage);
         stage.initModality(Modality.NONE);
+        stage.setTitle("Cart");
 
-        TableView<Product, String> cartTable = new TableView<>();
+        ObservableMap<Product, Integer> cartMap = this.model.itemCartProperty();
+        ObservableList<Product> liveCartMap = FXCollections.observableArrayList(cartMap.keySet());
+
+        cartMap.addListener((MapChangeListener<Product, Integer>) change -> {
+            if (change.wasAdded()) {
+                if (!liveCartMap.contains(change.getKey())) {
+                    liveCartMap.add(change.getKey());
+                }
+            }
+            if (change.wasRemoved()) {
+                if (!liveCartMap.contains(change.getKey())) {
+                    liveCartMap.remove(change.getKey());
+                }
+                //bro this does NOT work :broken:
+            }
+        });
+
+        TableView<Product> cartTable = new TableView<>();
+        cartTable.setItems(liveCartMap);
         TableColumn<Product, String> nameCol = new TableColumn<>("Name");
         nameCol.setCellValueFactory(cellData -> cellData.getValue().getName());
         TableColumn<Product, String> priceCol = new TableColumn<>("Price");
-        priceCol.setCellValueFactory(cellData -> cellData.getValue().getPriceLabel());
+        priceCol.setCellValueFactory(cellData -> {
+            SimpleFloatProperty price = cellData.getValue().getPrice();
+            int qty = getTableView().getItemAmt();
+            //fix tmrw
+        });
 
-        cartTable.getColumns().addAll(nameCol, priceCol);
+        TableColumn<Product, String> qtyCol = new TableColumn<>("Qty");
+        qtyCol.setCellValueFactory(cellData -> {
+            Product p = cellData.getValue();
+            SimpleIntegerProperty qty = new SimpleIntegerProperty(this.model.getItemAmt(p));
 
-        Vbox cartBox = new VBox(5, cartTable);
+             this.model.itemCart.addListener((MapChangeListener<Product, Integer>) change -> {
+                 qty.set(this.model.getItemAmt(p));
+             });
+            return qty.asString();
+        });
+
+        cartTable.getColumns().addAll(nameCol, priceCol, qtyCol);
+
+        VBox cartBox = new VBox(5, cartTable);
         
-        Scene scene = new Scene(cartBox, 200, 800);
+        Scene scene = new Scene(cartBox, 250, 400);
         stage.setScene(scene);
         stage.show();
     }

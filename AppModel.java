@@ -115,6 +115,19 @@ public class AppModel {
             return 0;
     }
 
+    public ObservableMap<Product, Integer> itemCartProperty() {
+        return itemCart;
+    }
+
+    public ObservableList<Product> itemInCart() {
+        ObservableList<Product> itemsinCart = FXCollections.observableArrayList(); 
+
+        for (Product m : itemCart.keySet()) {
+            itemsinCart.add(m);
+        }
+
+        return itemsinCart;
+    }
     
     
     }
@@ -169,10 +182,10 @@ class User {
 }
 
 class Product implements Comparable<Product>{
-    private String name;
-    private float price;
-    private int stock;
-    private ItemCategory category;
+     private final String name;
+    private final float price;
+    private final int stock;
+    private final ItemCategory category;
 
     public Product(String name, int stock, float price, ItemCategory category) {
         this.name = name;

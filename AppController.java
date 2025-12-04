@@ -58,4 +58,13 @@ public class AppController {
         this.model.deduceCartItem(product);
     }
 
+    public ObservableMap<Product, Integer> itemCartProperty() {
+        this.model.itemCartProperty();
+    }
+
+    public ObservableList<Product> itemInCart() {
+        return this.model.itemInCart();
+    }
+
+
 }
