@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.time.YearMonth;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 
 public class AppController {
     private final AppModel model;
@@ -59,7 +60,7 @@ public class AppController {
     }
 
     public ObservableMap<Product, Integer> itemCartProperty() {
-        this.model.itemCartProperty();
+        return this.model.itemCart;
     }
 
     public ObservableList<Product> itemInCart() {

@@ -29,6 +29,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableRow;
 
+import javafx.beans.binding.Bindings;           
+import javafx.beans.value.ObservableValue;      
+import javafx.collections.ObservableMap;        
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableMap;
+
 
 
 public class AppView {
@@ -261,6 +267,7 @@ public class AppView {
                 if (!liveCartMap.contains(change.getKey())) {
                     liveCartMap.remove(change.getKey());
                 }
+                    
                 //bro this does NOT work :broken:
             }
         });
@@ -268,23 +275,47 @@ public class AppView {
         TableView<Product> cartTable = new TableView<>();
         cartTable.setItems(liveCartMap);
         TableColumn<Product, String> nameCol = new TableColumn<>("Name");
-        nameCol.setCellValueFactory(cellData -> cellData.getValue().getName());
-        TableColumn<Product, String> priceCol = new TableColumn<>("Price");
-        priceCol.setCellValueFactory(cellData -> {
-            SimpleFloatProperty price = cellData.getValue().getPrice();
-            int qty = getTableView().getItemAmt();
-            //fix tmrw
-        });
+        nameCol.setCellValueFactory(cellData -> cellData.getValue().getName());        
 
         TableColumn<Product, String> qtyCol = new TableColumn<>("Qty");
         qtyCol.setCellValueFactory(cellData -> {
             Product p = cellData.getValue();
             SimpleIntegerProperty qty = new SimpleIntegerProperty(this.model.getItemAmt(p));
 
-             this.model.itemCart.addListener((MapChangeListener<Product, Integer>) change -> {
+             this.controller.itemCartProperty().addListener((MapChangeListener<Product, Integer>) change -> {
                  qty.set(this.model.getItemAmt(p));
              });
             return qty.asString();
+        });
+
+        TableColumn<Product, String> priceCol = new TableColumn<>("Price");
+
+
+        priceCol.setCellValueFactory(cellData -> {
+            Product p = cellData.getValue();
+
+            ObservableValue<Integer> qtyInMap = Bindings.valueAt(cartMap, p);
+
+            SimpleIntegerProperty qty = new SimpleIntegerProperty(this.model.getItemAmt(p));
+
+
+
+            if (qtyInMap.getValue() == null) {
+                qty.set(0); 
+            }  else {
+                qty.set(qtyInMap.getValue());
+            }
+
+            float unitPrice = p.getPrice().get();
+
+            float total = unitPrice * qty.get();
+
+            this.controller.itemCartProperty().addListener((MapChangeListener<Product, Integer>) change -> {
+                 qty.set(this.model.getItemAmt(p));
+                 
+             });
+
+            return new SimpleStringProperty("$"+total);
         });
 
         cartTable.getColumns().addAll(nameCol, priceCol, qtyCol);

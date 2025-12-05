@@ -19,6 +19,7 @@ public class AppProductList {
 
         int[] meatExp = {2025, 12, 14};
 
+
         productList.add(new Perishable("Banana", 10, (float) 3.29, ItemCategory.FRUITS_N_VEGETABLES, bananasExp, 3));
         productList.add(new Perishable("Apple", 10, (float) 2.4, ItemCategory.FRUITS_N_VEGETABLES, bananasExp, 2));
         productList.add(new Perishable("Peach", 10, (float) 1.2, ItemCategory.FRUITS_N_VEGETABLES, peachExp, 1));

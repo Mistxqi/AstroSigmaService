@@ -19,8 +19,8 @@ public class AppModel {
     private final ObservableList<Product> productList;
 
     AppModel() {
-        this.loginList = AppUserList.getLoginList();
-        this.productList = AppProductList.getProductList();
+        this.loginList = MVCExample.getLoginList();
+        this.productList = MVCExample.getProductList();
     }
 
     public boolean register(User user) {
