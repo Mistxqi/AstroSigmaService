@@ -100,11 +100,13 @@ public class AppModel {
     }
 
     public void deduceCartItem(Product product) {
-        if (itemCart.containsKey(product) && itemCart.get(product)>1){
-            int a = itemCart.get(product);
-            itemCart.put(product, a-1);
-        } else {
-            itemCart.remove(product);
+        if(itemCart.containsKey(product)){
+            if (itemCart.get(product)>1){
+                int a = itemCart.get(product);
+                itemCart.put(product, a-1);
+            } else {
+                itemCart.remove(product);
+            }
         }
     }
 
@@ -182,10 +184,10 @@ class User {
 }
 
 class Product implements Comparable<Product>{
-     private final String name;
-    private final float price;
-    private final int stock;
-    private final ItemCategory category;
+    private  String name;
+    private  float price;
+    private  int stock;
+    private  ItemCategory category;
 
     public Product(String name, int stock, float price, ItemCategory category) {
         this.name = name;

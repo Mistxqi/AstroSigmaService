@@ -46,7 +46,7 @@ public class AppView {
     private Button homeButton;
     private Button cartButton;
     private Button LanguageButton;
-    private Button accountButton;
+    private Button checkoutButton;
 
     private TextField searchField;
     private AppModel model;
@@ -132,16 +132,16 @@ public class AppView {
         LanguageButton = new Button("Language");
         LanguageButton.setAlignment(Pos.CENTER);
 
-        accountButton = new Button("Account");
-        accountButton.setAlignment(Pos.CENTER);
+        checkoutButton = new Button("Checkout");
+        checkoutButton.setAlignment(Pos.CENTER);
 
         // when side buttons are clicked, change the right-side content
         homeButton.setOnAction(e -> setContent(displayHomeScreen(currentUser)));
         cartButton.setOnAction(e -> displayCartScreen(currentUser));
         LanguageButton.setOnAction(e -> setContent(displayLanguageScreen()));
-        accountButton.setOnAction(e -> setContent(displayAccountScreen(currentUser)));
+        checkoutButton.setOnAction(e -> setContent(displayCheckoutScreen(currentUser)));
 
-        VBox menuBox = new VBox(30, homeButton, cartButton, LanguageButton, accountButton);
+        VBox menuBox = new VBox(30, homeButton, cartButton, LanguageButton, checkoutButton);
         menuBox.setAlignment(Pos.CENTER);
         menuBox.setPrefSize(120, 300);
         return menuBox;
@@ -156,6 +156,8 @@ public class AppView {
     
     private VBox displayHomeScreen(User user) {
         Label welcomeLabel = new Label("Welcome, " + user.getUserName() + "!");
+        Label balanceLabel = new Label("Balance: $" + user.getBalance());
+        balanceLabel.setAlignment(Pos.TOP_RIGHT);
         welcomeLabel.setAlignment(Pos.CENTER);
         searchField = new TextField();
         searchField.setPromptText("Enter Food Item");
@@ -221,7 +223,8 @@ public class AppView {
                 setGraphic(addBtn);
                 addBtn.setOnAction(event -> {
                     Product productAdded = getTableView().getItems().get(getIndex());
-                    AppView.this.controller.deduceCartItem(productAdded);          
+                    AppView.this.controller.deduceCartItem(productAdded); 
+                           
                     System.out.println("Reducing Item from Cart: " + productAdded.getName().get());
                     getTableView().refresh();
                     getTableView().requestLayout();
@@ -243,7 +246,9 @@ public class AppView {
 
         updateControllerFromListeners();
 
-        return new VBox(10, welcomeLabel, searchField, productTable);
+        HBox userRow = new HBox(300, welcomeLabel, balanceLabel);
+        
+        return new VBox(10, userRow, searchField, productTable);
     }
 
 
@@ -256,6 +261,7 @@ public class AppView {
 
         ObservableMap<Product, Integer> cartMap = this.model.itemCartProperty();
         ObservableList<Product> liveCartMap = FXCollections.observableArrayList(cartMap.keySet());
+        
 
         cartMap.addListener((MapChangeListener<Product, Integer>) change -> {
             if (change.wasAdded()) {
@@ -264,13 +270,15 @@ public class AppView {
                 }
             }
             if (change.wasRemoved()) {
-                if (!liveCartMap.contains(change.getKey())) {
+                if (!change.getMap().containsKey(change.getKey())) {
                     liveCartMap.remove(change.getKey());
-                }
-                    
+                }                 
                 //bro this does NOT work :broken:
+                if (productTable != null) productTable.refresh();
             }
         });
+
+        
 
         TableView<Product> cartTable = new TableView<>();
         cartTable.setItems(liveCartMap);
@@ -282,6 +290,7 @@ public class AppView {
             Product p = cellData.getValue();
             SimpleIntegerProperty qty = new SimpleIntegerProperty(this.model.getItemAmt(p));
 
+
              this.controller.itemCartProperty().addListener((MapChangeListener<Product, Integer>) change -> {
                  qty.set(this.model.getItemAmt(p));
              });
@@ -289,35 +298,24 @@ public class AppView {
         });
 
         TableColumn<Product, String> priceCol = new TableColumn<>("Price");
-
-
         priceCol.setCellValueFactory(cellData -> {
             Product p = cellData.getValue();
-
-            ObservableValue<Integer> qtyInMap = Bindings.valueAt(cartMap, p);
-
+            SimpleFloatProperty priceProperty = p.getPrice();
+            float unitPrice = priceProperty.get();
+            
             SimpleIntegerProperty qty = new SimpleIntegerProperty(this.model.getItemAmt(p));
-
-
-
-            if (qtyInMap.getValue() == null) {
-                qty.set(0); 
-            }  else {
-                qty.set(qtyInMap.getValue());
-            }
-
-            float unitPrice = p.getPrice().get();
-
-            float total = unitPrice * qty.get();
-
+            SimpleStringProperty priceString = new SimpleStringProperty(String.format("$%.2f", qty.get() * unitPrice));
+            
             this.controller.itemCartProperty().addListener((MapChangeListener<Product, Integer>) change -> {
-                 qty.set(this.model.getItemAmt(p));
-                 
-             });
-
-            return new SimpleStringProperty("$"+total);
+                qty.set(this.model.getItemAmt(p));
+                priceString.set(String.format("$%.2f", qty.get() * unitPrice));
+            });
+            
+            return priceString;
         });
 
+
+        Label totalPrice = new Label("");
         cartTable.getColumns().addAll(nameCol, priceCol, qtyCol);
 
         VBox cartBox = new VBox(5, cartTable);
@@ -344,7 +342,7 @@ public class AppView {
         return box;
     }
 
-    private VBox displayAccountScreen(User user) {
+    private VBox displayCheckoutScreen(User user) {
         Label title = new Label("Account");
         title.setAlignment(Pos.CENTER);
 

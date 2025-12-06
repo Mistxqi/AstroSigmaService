@@ -67,5 +67,8 @@ public class AppController {
         return this.model.itemInCart();
     }
 
+    public float getBalance(User user) {
+        return user.getBalance();
+    }
 
 }
