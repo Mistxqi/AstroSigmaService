@@ -56,9 +56,8 @@ public class MVCExample extends Application {
         productList.add(new Perishable("Jerky", 10, (float)9.49, ItemCategory.SNACKS, peachExp, 3));
 
         //add Logins
-        loginList.add(new User("Admin", "12345678", UserType.ADMIN, 10000));
         loginList.add(new User("User", "12345678", UserType.CUSTOMER, 10000));
-        
+        loginList.add(new User("BrokeUser", "12345678", UserType.CUSTOMER, 10));
         launch(args);
     }
 

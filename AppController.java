@@ -1,5 +1,7 @@
 import java.time.LocalDate;
 import java.time.YearMonth;
+
+import javafx.beans.property.SimpleFloatProperty;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
@@ -47,8 +49,8 @@ public class AppController {
         return thisa.compareTo(other);
     }
 
-    public void addCartItem(Product product) {
-        this.model.addCartItem(product);
+    public boolean addCartItem(Product product) {
+       return this.model.addCartItem(product);
     }
 
     public void removeCartItem(Product product) {
@@ -60,7 +62,7 @@ public class AppController {
     }
 
     public ObservableMap<Product, Integer> itemCartProperty() {
-        return this.model.itemCart;
+        return model.itemCartProperty();
     }
 
     public ObservableList<Product> itemInCart() {
@@ -69,6 +71,14 @@ public class AppController {
 
     public float getBalance(User user) {
         return user.getBalance();
+    }
+
+    public SimpleFloatProperty totalPriceProperty() {
+        return this.model.totalPriceProperty();
+    }
+
+    public void checkout(ObservableMap<Product, Integer> list) {
+        this.model.checkout(list);
     }
 
 }

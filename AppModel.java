@@ -17,10 +17,13 @@ import javafx.collections.MapChangeListener;
 public class AppModel {
     private final ObservableList<User> loginList;
     private final ObservableList<Product> productList;
+    private final SimpleFloatProperty totalPrice = new SimpleFloatProperty(0);
 
     AppModel() {
         this.loginList = MVCExample.getLoginList();
         this.productList = MVCExample.getProductList();
+
+        itemCart.addListener((MapChangeListener<Product, Integer>) change -> updateTotalPrice());
     }
 
     public boolean register(User user) {
@@ -83,13 +86,33 @@ public class AppModel {
     public ObservableMap<Product, Integer> itemCart = FXCollections.observableHashMap();
     
     
-    public void addCartItem(Product product) {
+    public boolean addCartItem(Product product) {
 
         if (itemCart.containsKey(product)){
-            int a = itemCart.get(product);
-            itemCart.put(product, a+1);
+            if (itemCart.get(product) < product.getStock().get()){
+                int a = itemCart.get(product);
+                itemCart.put(product, a+1);
+                return true;
+            } 
+            return false;
         } else {
+            if (product.getStock().get() != 0){
             itemCart.put(product, 1);
+            return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public void checkout(ObservableMap<Product, Integer> list) {
+        if (!list.isEmpty()){
+            for (Product m : list.keySet()){
+                int currentStock = m.getStock().get();
+                int cartStock = list.get(m);
+                m.setStock(new SimpleIntegerProperty(currentStock - cartStock));
+                System.out.println(m.getStock().asString());
+            }
         }
     }
 
@@ -131,8 +154,23 @@ public class AppModel {
         return itemsinCart;
     }
     
-    
+    public SimpleFloatProperty totalPriceProperty() { 
+        return totalPrice; 
     }
+
+    private void updateTotalPrice() {
+    float total = 0;
+
+    for (Product p : itemCart.keySet()) {
+        float price = p.getPrice().get();
+        int qty = itemCart.get(p);
+        total += price * qty;
+    }
+
+    totalPrice.set(total);
+    }
+    
+}
 
 
 class User {
@@ -175,7 +213,7 @@ class User {
     public boolean chargeBalance(float amount) {
 
         if (this.balance >= amount) {
-            balance= this.balance-amount;
+             this.balance -= amount;
             return true;
         } else {
             return false;
@@ -237,7 +275,6 @@ class Product implements Comparable<Product>{
     public void setCategory(ItemCategory category) {
         this.category = category;
     }
-    
 }
 
 class Perishable extends Product {

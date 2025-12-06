@@ -46,7 +46,7 @@ public class AppView {
     private Button homeButton;
     private Button cartButton;
     private Button LanguageButton;
-    private Button checkoutButton;
+    private Button logoutButton;
 
     private TextField searchField;
     private AppModel model;
@@ -78,6 +78,8 @@ public class AppView {
     }
 
     private void createInitialLoginScreen() {
+        Label astro = new Label("ASTRO SUPERMARKET");
+        
         this.loginButton = new Button("Login");
         this.loginButton.setOnAction(event ->addLoginForm());
 
@@ -85,9 +87,11 @@ public class AppView {
         this.registerButton.setOnAction(event ->addRegisterForm());
 
         HBox buttonRow = new HBox(5, loginButton, registerButton);
+        VBox loginBox = new VBox(5,astro, buttonRow);
+        loginBox.setAlignment(Pos.CENTER);
         buttonRow.setAlignment(Pos.CENTER);
 
-        view.getChildren().add(buttonRow);
+        view.getChildren().add(loginBox);
     }
 
     private void updateControllerFromListeners() {
@@ -96,6 +100,7 @@ public class AppView {
         updateIfNeeded(newValue);
         });
         }
+
     }
 
     class SortByName implements Comparator<Product> {
@@ -132,16 +137,21 @@ public class AppView {
         LanguageButton = new Button("Language");
         LanguageButton.setAlignment(Pos.CENTER);
 
-        checkoutButton = new Button("Checkout");
-        checkoutButton.setAlignment(Pos.CENTER);
+        logoutButton = new Button("Logout");
+        logoutButton.setAlignment(Pos.CENTER);
 
         // when side buttons are clicked, change the right-side content
         homeButton.setOnAction(e -> setContent(displayHomeScreen(currentUser)));
         cartButton.setOnAction(e -> displayCartScreen(currentUser));
         LanguageButton.setOnAction(e -> setContent(displayLanguageScreen()));
-        checkoutButton.setOnAction(e -> setContent(displayCheckoutScreen(currentUser)));
+        logoutButton.setOnAction(e -> 
+            {view.getChildren().clear();
+            currentUser = null;
+            model.itemCartProperty().clear();
+            createInitialLoginScreen();
+        });
 
-        VBox menuBox = new VBox(30, homeButton, cartButton, LanguageButton, checkoutButton);
+        VBox menuBox = new VBox(30, homeButton, cartButton, LanguageButton, logoutButton);
         menuBox.setAlignment(Pos.CENTER);
         menuBox.setPrefSize(120, 300);
         return menuBox;
@@ -156,7 +166,8 @@ public class AppView {
     
     private VBox displayHomeScreen(User user) {
         Label welcomeLabel = new Label("Welcome, " + user.getUserName() + "!");
-        Label balanceLabel = new Label("Balance: $" + user.getBalance());
+        Label balanceLabel = new Label("Balance: $" + String.format("%.2f", user.getBalance()));
+        
         balanceLabel.setAlignment(Pos.TOP_RIGHT);
         welcomeLabel.setAlignment(Pos.CENTER);
         searchField = new TextField();
@@ -198,10 +209,14 @@ public class AppView {
                 setGraphic(addBtn);
                 addBtn.setOnAction(event -> {
                     Product productAdded = getTableView().getItems().get(getIndex());
-                    AppView.this.controller.addCartItem(productAdded);          
-                    System.out.println("Adding to cart: " + productAdded.getName().get());
-                    getTableView().refresh();
-                    getTableView().requestLayout();
+                    boolean proceed = AppView.this.controller.addCartItem(productAdded);   
+                    if (proceed) {
+                        System.out.println("Adding to cart: " + productAdded.getName().get());
+                        getTableView().refresh();
+                        getTableView().requestLayout();
+                    } else {
+                        displayAlertScreen("Out of Stock");
+                    }
                 }); 
             }
             }
@@ -235,7 +250,7 @@ public class AppView {
         });
         
 
-        productTable.setPrefHeight(100);
+        productTable.setPrefHeight(200);
         productTable.setPrefWidth(500);
 
         productTable.getColumns().addAll(nameCol, priceCol, catCol, plusCol, qtyCol, minCol);
@@ -315,10 +330,35 @@ public class AppView {
         });
 
 
-        Label totalPrice = new Label("");
-        cartTable.getColumns().addAll(nameCol, priceCol, qtyCol);
+        Label totalPrice = new Label();
+        totalPrice.textProperty().bind(
+            model.totalPriceProperty().asString("Total Price: $%.2f")
+        );
 
-        VBox cartBox = new VBox(5, cartTable);
+        Button checkoutBtn = new Button("Checkout");
+        checkoutBtn.setOnAction(event -> {
+            float a = model.totalPriceProperty().get();
+            if (user.getBalance() < a) {
+                displayAlertScreen("Insufficient Balance.");
+            } else if (cartMap.isEmpty()) {
+                displayAlertScreen("Order Something.");
+            } else {
+                user.chargeBalance(a);
+                displayAlertScreen("Checkout successful! Remaining: $" + user.getBalance());
+                controller.checkout(cartMap);
+                cartMap.clear();
+                VBox newHomeScreen = displayHomeScreen(currentUser);
+                setContent(newHomeScreen);
+                stage.close();
+            }
+        });
+
+        
+
+        cartTable.getColumns().addAll(nameCol, priceCol, qtyCol);
+        HBox checkoutRow = new HBox(5, totalPrice, checkoutBtn);
+
+        VBox cartBox = new VBox(10, cartTable, checkoutRow);
         
         Scene scene = new Scene(cartBox, 250, 400);
         stage.setScene(scene);
@@ -330,14 +370,15 @@ public class AppView {
         title.setAlignment(Pos.CENTER);
 
         RadioButton english = new RadioButton("English(US)");
-        RadioButton indonesian = new RadioButton("English(SG)");
+        RadioButton sgEnglish = new RadioButton("English(SG)");
+        RadioButton ynEnglish = new RadioButton("English(YN)");
 
         ToggleGroup group = new ToggleGroup();
         english.setToggleGroup(group);
-        indonesian.setToggleGroup(group);
+        sgEnglish.setToggleGroup(group);
         english.setSelected(true);
-
-        VBox box = new VBox(10, title, english, indonesian);
+        
+        VBox box = new VBox(10, title, english, sgEnglish);
         box.setAlignment(Pos.CENTER);
         return box;
     }
